@@ -1,23 +1,22 @@
 from project.util.config_broker import ConfigScenario
-from project.util.construct_scenario import (exchange,
-                                   queue_baby_monitor,
-                                   queue_smartphone,
-                                   queue_smart_tv,
-                                   routing_key_baby_monitor)
+from project.util.construct_scenario import (
+    exchange,
+    queue_baby_monitor,
+    queue_smartphone,
+    queue_smart_tv,
+    routing_key_baby_monitor,
+)
 from project.model.buisness.baby_monitor_business import check_confirm_notification
-from threading import Thread
 
 
 class BabyMonitorSubscriber(ConfigScenario):
     def __init__(self):
         ConfigScenario.__init__(self)
-        self.declare_exchange(exchange, 'direct')
+        self.declare_exchange(exchange, "direct")
         self.declare_queue(queue_baby_monitor)
         self.declare_queue(queue_smartphone)
         self.declare_queue(queue_smart_tv)
-        self.bind_exchange_queue(exchange,
-                                 queue_baby_monitor,
-                                 routing_key_baby_monitor)
+        self.bind_exchange_queue(exchange, queue_baby_monitor, routing_key_baby_monitor)
 
     def run(self):
         self.check_baby_status()

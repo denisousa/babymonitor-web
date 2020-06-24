@@ -2,13 +2,11 @@ from project.util.config_broker import ConfigScenario
 from project.util.construct_scenario import (exchange,
                                    queue_smart_tv,
                                    routing_key_smart_tv)
-from threading import Thread
 
 
 class SmartTvSubscriber(ConfigScenario):
     def __init__(self):
         ConfigScenario.__init__(self)
-        # Thread.__init__(self)
         self.declare_exchange(exchange, 'direct')
         self.declare_queue(queue_smart_tv)
         self.bind_exchange_queue(exchange,
@@ -23,14 +21,14 @@ class SmartTvSubscriber(ConfigScenario):
 
         self.channel.basic_consume(
             queue=queue_smart_tv,
-            on_message_callback=callback_smartphone,
+            on_message_callback=self.callback_smartphone,
             auto_ack=True,
         )
 
         self.channel.start_consuming()
         # self.connection.close()
 
-    def callback_smartphone(ch, method, properties, body):
+    def callback_smartphone(self, ch, method, properties, body):
         available = check_available_tv()
         if available:
             show_alert()

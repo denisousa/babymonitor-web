@@ -28,13 +28,13 @@ import pika
 # smart_tv.join()
 
 subscriber_list = []
-# subscriber_list.append(BabyMonitorSubscriber())
+subscriber_list.append(BabyMonitorSubscriber())
 subscriber_list.append(SmartphoneSubscriber('babymonitor'))
 subscriber_list.append(SmartphoneSubscriber('smart_tv'))
+subscriber_list.append(SmartTvSubscriber())
 
 # execute
 process_list = []
-# import ipdb; ipdb.set_trace()
 for sub in subscriber_list:
     process = Process(target=sub.run)
     process.start()

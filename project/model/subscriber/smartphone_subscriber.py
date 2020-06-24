@@ -1,31 +1,33 @@
 from project.util.config_broker import ConfigScenario
 from project.model.publisher.smartphone_publisher import SmartphonePublisher
-from project.util.construct_scenario import (exchange,
-                                   queue_smartphone,
-                                   routing_key_smartphone)
-from project.model.buisness.smartphone_business import (wait_user_confirm,
-                      check_is_notification,
-                      check_user_confirm,
-                      send_confirm_baby_monitor,
-                      forward_message_smart_tv)
-from threading import Thread
+from project.util.construct_scenario import (
+    exchange,
+    queue_smartphone,
+    routing_key_smartphone,
+)
+from project.model.buisness.smartphone_business import (
+    wait_user_confirm,
+    check_is_notification,
+    check_user_confirm,
+    send_confirm_baby_monitor,
+    forward_message_smart_tv,
+)
+import multiprocessing
 
 
-class SmartphoneSubscriber(ConfigScenario):
+class SmartphoneSubscriber(ConfigScenario, multiprocessing.Process):
     def __init__(self, type_consume):
         ConfigScenario.__init__(self)
-        Thread.__init__(self)
-        self.declare_exchange(exchange, 'direct')
+        multiprocessing.Process.__init__(self)
+        self.declare_exchange(exchange, "direct")
         self.declare_queue(queue_smartphone)
-        self.bind_exchange_queue(exchange,
-                                 queue_smartphone,
-                                 'bm_info')
+        self.bind_exchange_queue(exchange, queue_smartphone, "bm_info")
         self.type_consume = type_consume
 
     def run(self):
-        if self.type_consume == 'babymonitor':
+        if self.type_consume == "babymonitor":
             self.consume_message_baby_monitor()
-        if self.type_consume == 'smart_tv':
+        if self.type_consume == "smart_tv":
             self.consume_message_tv()
 
     def consume_message_baby_monitor(self):
