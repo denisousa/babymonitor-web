@@ -11,7 +11,7 @@ class ConfigScenario(Connection):
         )
 
     def declare_queue(self, queue):
-        self.channel.queue_declare(queue)
+        self.channel.queue_declare(queue, durable=True)
 
     def bind_exchange_queue(self, exchange, queue, routing_key):
         self.channel.queue_bind(

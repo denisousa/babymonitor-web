@@ -1,12 +1,17 @@
 from project.model.smart_tv import SmartTv
-from app import db
+from project import db
 
 
 class SmartTvService():
-    def insert_data(self):
-        status_baby = SmartTv(False , False, True, 0)
-        db.session.add(status_baby)
+    def insert_data(self, data):
+        data = SmartTv(**data)
+        db.session.add(data)
         db.session.commit()
 
-    def return_data(self):
-        return SmartTv.query.order_by(SmartTv.id.desc()).first()
+    def last_record(self):
+        data = SmartTv().query.order_by(
+            self.database.id.desc()).first()
+        if not data:
+            return data
+
+        return data.__dict__

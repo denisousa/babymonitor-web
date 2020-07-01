@@ -5,13 +5,20 @@ from flask_migrate import Migrate
 from config import make_config
 from flask_cors import CORS
 from flask_babel import Babel
+import os
+import eventlet
+eventlet.monkey_patch()
 
+try:
+    os.remove("storage.db")
+except Exception:
+    pass
 
 app = Flask(__name__)
 make_config(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 babel = Babel(app)
 CORS(app)
 
@@ -25,4 +32,4 @@ from .controller import main_controller
 from .model import baby_monitor, smartphone, smart_tv
 
 db.create_all()
-from .util import start_subscribers
+#from .util import start_subscribers

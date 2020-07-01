@@ -2,6 +2,7 @@ from project.model.subscriber.baby_monitor_subscriber import BabyMonitorSubscrib
 from project.model.subscriber.smartphone_subscriber import SmartphoneSubscriber
 from project.model.subscriber.smart_tv_subscriber import SmartTvSubscriber
 from multiprocessing import Process
+from time import sleep
 import pika
 # baby_monitor = BabyMonitorSubscriber()
 # baby_monitor.start()
@@ -40,8 +41,8 @@ for sub in subscriber_list:
     process.start()
     process_list.append(process)
 
-# wait for all process to finish
-for process in process_list:
-    process.join()
+sleep(1)
 
-print('Work')
+# wait for all process to finish
+# for process in process_list:
+#    process.join()

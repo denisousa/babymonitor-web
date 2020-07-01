@@ -1,9 +1,6 @@
+# docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 from project import app, socketio
-import os
 
 if __name__ == "__main__":
-    # os.system("project/util/start_subscribers.py")
-    # from subprocess import call
-    # call('python project/util/start_subscribers.py'.split())
-    # exec(open('project/util/start_subscribers.py').read())
+    print('Run BabyMonitorSoS \n')
     socketio.run(app)

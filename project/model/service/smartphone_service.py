@@ -1,12 +1,12 @@
 from project.model.smartphone import Smartphone
-from app import db
+from project import db
 
 
 class SmartphoneService():
-    def insert_data(self):
-        status_baby = Smartphone(False , False, True, 0)
-        db.session.add(status_baby)
+    def insert_data(self, data):
+        data_smartphone = Smartphone(**data)
+        db.session.add(data_smartphone)
         db.session.commit()
 
-    def return_data(self):
+    def last_record(self):
         return Smartphone.query.order_by(Smartphone.id.desc()).first()

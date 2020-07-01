@@ -9,6 +9,6 @@ class SmartphoneController():
         publisher.join()
 
     def start_subscriber(self):
-        subscriber = SmartphoneSubscriber()
+        subscriber = SmartphoneSubscriber('babymonitor')
         subscriber.start()
         subscriber.join()

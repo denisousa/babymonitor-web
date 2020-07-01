@@ -39,6 +39,7 @@
 
                 <div class="box">
                     <button type="submit" class="btn btn-info btn-devices" id="btn-smartphone">Start</button>
+                    <button type="submit" class="btn btn-info btn-devices" id="btn-smartphone-confirm">Confirm</button>
                 </div> 
 
             </div>
@@ -51,7 +52,8 @@
                 </div>
 
                 <div class="box">
-                    <button type="submit" class="btn btn-info btn-devices" id="btn-smarttv">Start</button>
+                    <button type="submit" class="btn btn-info btn-devices" id="btn-tv">Start</button>
+                    <button type="submit" class="btn btn-info btn-devices" id="btn-tv-blocked">Block</button>
                 </div> 
                 
             </div>
@@ -77,13 +79,7 @@
                 <div class="card system-info sent">
                     <h5 class="card-header text-center">Sent</h5>
                     <div class="card-body">
-                        <div id="babymonitor-data">
-                            <p class="type">Type:</p>
-                            <p class="breathing">Breathing: </p>
-                            <p class="sleeping">Sleeping: </p>
-                            <p class="time-no-breathing">Time no Breathing: </p>
-                            <p class="message">Message: </p>
-                        </div>
+                        <div id="babymonitor-sent"></div>
                     </div>
                 </div>
             </div>
@@ -92,8 +88,7 @@
                 <div class="card system-info sent">
                     <h5 class="card-header text-center">Sent</h5>
                     <div class="card-body">
-                        <p class="card-text">Type: {{tag}}</p>
-                        <p class="card-text">Message: {{message}}</p>
+                        <div id="smartphone-sent"></div>
                     </div>
                 </div>
             </div>
@@ -111,8 +106,7 @@
                 <div class="card system-info sent">
                     <h5 class="card-header text-center">Sent</h5>
                     <div class="card-body">
-                        <p class="card-text">Type: {{tag}}</p>
-                        <p class="card-text">Message: {{message}}</p>
+                        <div id="observer-sent"></div>
                     </div>
                 </div>
             </div>
@@ -124,8 +118,7 @@
                 <div class="card system-info received">
                     <h5 class="card-header text-center">Received</h5>
                     <div class="card-body">
-                        <p class="card-text">Type: {{tag}}</p>
-                        <p class="card-text">Message: {{message}}</p>
+                        <div id="babymonitor-receive"></div>
                     </div>
                 </div>
             </div>
@@ -134,13 +127,7 @@
                 <div class="card system-info received">
                     <h5 class="card-header text-center">Received</h5>
                     <div class="card-body">
-                        <div id="smartphone-data">
-                            <p class="type">Type:</p>
-                            <p class="breathing">Breathing: </p>
-                            <p class="sleeping">Sleeping: </p>
-                            <p class="time-no-breathing">Time no Breathing: </p>
-                            <p class="message">Message: </p>
-                        </div>
+                        <div id="smartphone-receive"></div>
                     </div>
                 </div>
             </div>
@@ -149,8 +136,7 @@
                 <div class="card system-info received">
                     <h5 class="card-header text-center">Received</h5>
                     <div class="card-body">
-                        <p class="card-text">Type: {{tag}}</p>
-                        <p class="card-text">Message: {{message}}</p>
+                        <div id="tv-receive"></div>
                     </div>
                 </div> 
             </div>
@@ -159,12 +145,45 @@
                 <div class="card system-info received">
                     <h5 class="card-header text-center">Received</h5>
                     <div class="card-body">
-                        <p class="card-text">Topic: {{topic}}</p>
-                        <p class="card-text">Type: {{tag}}</p>
-                        <p class="card-text">Breathing: {{breathing}}</p>
-                        <p class="card-text">Sleeping: {{sleeping}}</p>
-                        <p class="card-text">Time No Breathing: {{time_no_breathing}}</p>
-                        <p class="card-text">Message: {{message}}</p>
+                        <div id="observer-receive"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row rw-received">
+            <div class="container col-sm babymonitor">
+                <div class="card system-info information">
+                    <h5 class="card-header text-center">information</h5>
+                    <div class="card-body">
+                        <div id="babymonitor-information"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container col-sm smartphone">
+                <div class="card system-info information">
+                    <h5 class="card-header text-center">Information</h5>
+                    <div class="card-body">
+                        <div id="smartphone-information"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container col-sm smarttv">
+                <div class="card system-info information">
+                    <h5 class="card-header text-center">Information</h5>
+                    <div class="card-body">
+                        <div id="tv-information"></div>
+                    </div>
+                </div> 
+            </div>
+
+            <div class="container col-sm observer">
+                <div class="card system-info information">
+                    <h5 class="card-header text-center">Information</h5>
+                    <div class="card-body">
+                        <div id="observer-information"></div>
                     </div>
                 </div>
             </div>
@@ -173,8 +192,8 @@
         <div class="row rw-log">
             <div class="container log">
                 <div class="card log-info">
-                    <div class="card-body">
-                        {{ x }}
+                    <div class="overflow-auto">
+                        <div id="log"></div>
                     </div>
                   </div>
             </div>
@@ -191,4 +210,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smartphone_received.js') }}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smartphone_sent.js') }}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smart_tv_received.js') }}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smart_tv_sent.js') }}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/log.js') }}"></script>
 </html>

@@ -6,27 +6,42 @@ var data_bm = false;
 document.querySelector('#btn-babymonitor').onclick = function () {
     data_bm = !data_bm
     if(data_bm) {
-        socket.emit('babymonitor', { msg : 'start', init: 'true' });
+        socket.emit('babymonitorConnect');
         disconnect_bm = false;
     } else {
         disconnect_bm = true;
+        socket.emit('babymonitorDesconnect');
     }
 };
 
-
-socket.on('updateBabymonitor', function(msg) {
+socket.on('BabyMonitorSent', function(msg) {
+    document.querySelector("#babymonitor-sent").innerHTML = '';
     if (!disconnect_bm) {
-        var breathing = 'Breathing: ' + msg['body'];
-        var sleeping = 'Sleeping: ' + msg['body'];
-        var timeNoBreathing = 'Time no Breathing: ' + msg['body'];
-        document.querySelector("#babymonitor-data .breathing").innerHTML = breathing;
-        document.querySelector("#babymonitor-data .sleeping").innerHTML = sleeping;
-        document.querySelector("#babymonitor-data .time-no-breathing").innerHTML = timeNoBreathing;
-        socket.emit('babymonitor', { msg : 'start' });
+        for(data in msg){
+            var p = document.createElement("p");
+            var value = document.createTextNode(data + ": " + msg[data]);
+            p.appendChild(value);
+            document.querySelector("#babymonitor-sent").appendChild(p);
+        }
+        // socket.emit('babymonitor', { msg : null });
     } else {
-        document.querySelector("#babymonitor-data .breathing").innerHTML = 'Breathing: ';
-        document.querySelector("#babymonitor-data .sleeping").innerHTML = 'Sleeping: ';
-        document.querySelector("#babymonitor-data .time-no-breathing").innerHTML = 'Time no Breathing: ';
+        document.querySelector("#babymonitor-sent").innerHTML = '';
     }
 });
 
+socket.on('BabyMonitorReceive', function(msg) {
+    document.querySelector("#babymonitor-receive").innerHTML = '';
+    if (!disconnect_sm) {
+        for(data in msg){
+            var p = document.createElement("p");
+            var value = document.createTextNode(data + ": " + msg[data]);
+            p.appendChild(value);
+            document.querySelector("#babymonitor-receive").appendChild(p);
+            setTimeout(function(){
+                document.querySelector("#babymonitor-receive").innerHTML = '';
+            }, 3000);
+        }
+    } else {
+        document.querySelector("#babymonitor-receive").innerHTML = '';
+    }
+});

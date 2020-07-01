@@ -1,28 +1,28 @@
 from project.util.config_broker import ConfigScenario
-from project.model.publisher.smartphone_publisher import SmartphonePublisher
-from project.util.construct_scenario import (
-    exchange,
-    queue_smartphone,
-    routing_key_smartphone,
-)
-from project.model.buisness.smartphone_business import (
+from project.util.construct_scenario import exchange, queue_smartphone, bm_info
+from project.model.business.smartphone_business import (
     wait_user_confirm,
     check_is_notification,
-    check_user_confirm,
     send_confirm_baby_monitor,
     forward_message_smart_tv,
+    type_notification,
 )
-import multiprocessing
+from project import socketio
+from flask_socketio import emit
+from threading import Thread
+import json
 
 
-class SmartphoneSubscriber(ConfigScenario, multiprocessing.Process):
+data = None
+
+class SmartphoneSubscriber(ConfigScenario, Thread):
     def __init__(self, type_consume):
         ConfigScenario.__init__(self)
-        multiprocessing.Process.__init__(self)
+        Thread.__init__(self)
+        self.type_consume = type_consume
         self.declare_exchange(exchange, "direct")
         self.declare_queue(queue_smartphone)
-        self.bind_exchange_queue(exchange, queue_smartphone, "bm_info")
-        self.type_consume = type_consume
+        self.bind_exchange_queue(exchange, queue_smartphone, bm_info)
 
     def run(self):
         if self.type_consume == "babymonitor":
@@ -30,38 +30,61 @@ class SmartphoneSubscriber(ConfigScenario, multiprocessing.Process):
         if self.type_consume == "smart_tv":
             self.consume_message_tv()
 
-    def consume_message_baby_monitor(self):
-        print(" [*] Smartphone waiting for messages. To exit press CTRL+C")
+    def stop(self):
+        if self.type_consume == 'babymonitor':
+            print("(Subscribe) SP|BM: Close")
+        else:
+            print("(Subscribe) SP|TV: Close")
 
+    def consume_message_baby_monitor(self):
+        print(
+            " [*] Smartphone waiting for messages from Baby Monitor. To exit press CTRL+C"
+        )
         self.channel.basic_consume(
             queue=queue_smartphone,
-            on_message_callback=self.callback_smartphone,
-            auto_ack=True,
+            on_message_callback=self.callback_babymonitor_sm,
+            auto_ack=False,
         )
 
         self.channel.start_consuming()
-        # self.connection.close()
 
     def consume_message_tv(self):
-        print(" [*] Smartphone waiting for messages. To exit press CTRL+C")
+        print(" [*] Smartphone waiting for messages from TV. To exit press CTRL+C")
 
         self.channel.basic_consume(
             queue=queue_smartphone,
-            on_message_callback=self.callback_smartphone,
+            on_message_callback=self.callback_smart_tv,
             auto_ack=True,
         )
 
         self.channel.start_consuming()
-        self.connection.close()
+        socketio.emit(
+            "SmartphoneReceive", {"msg": "ISSO VAI FUNCIONAR DEMAIS CARAAAAAAAAA"}
+        )
+        self.channel.start_consuming()
 
-    def callback_smartphone(ch, method, properties, body):
+    def callback_babymonitor_sm(self, ch, method, properties, body):
+        body = body.decode("UTF-8")
+        body = json.loads(body)
         notification = check_is_notification(body)
+        socketio.emit("SmartphoneReceive", body)
+        print('\nHERE DENIS', body, '\n')
         if notification:
-            # TODO chamar o método de exibir a pseudo alerta
+            info = type_notification(body)
+            socketio.emit("SmartphoneInformation", {"info": info})
+            print('\n\nBODY AQUIII', body)
             confirm = wait_user_confirm()
             if confirm:
-                send_confirm_baby_monitor(body)
+                send_confirm_baby_monitor()
+                socketio.emit("SmartphoneSent", {"info": "Confirmation Sent to BabyMonitor!"})
             else:
+                # Envio só a mensagem falando que é notificação
+                # Ou envio os dados da Emma também?
+                print(body)
                 forward_message_smart_tv(body)
-                # TODO como fazer para que o smartphone passe a consumir de outro tópico
-                # Talvez outra classe que deva ser instanciada? by Denis
+                socketio.emit("SmartphoneSent", {"info": "Notification Forward to Smart TV!"})
+        else:
+            socketio.emit("SmartphoneInformation", {"info": "Emma is fine."})
+
+    def callback_smart_tv(self, ch, method, properties, body):
+        pass

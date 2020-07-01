@@ -1,4 +1,7 @@
-class Smartphone():
-    def __init__(self, block):
-        __tablename__ = "smartphone"
-        self.block = block
+from project import db
+
+
+class Smartphone(db.Model):
+    __tablename__ = "smartphone"
+    id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
+

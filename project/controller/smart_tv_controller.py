@@ -3,9 +3,9 @@ from project.model.subscriber.smart_tv_subscriber import SmartTvSubscriber
 
 
 class SmartTvController():
-    # subscriber = SmartTvSubscriber()
-    # subscriber.start()
-    # subscriber.join()
+    subscriber = SmartTvSubscriber()
+    subscriber.start()
+    subscriber.join()
 
     publisher = SmartTvPublisher()
     publisher.start()

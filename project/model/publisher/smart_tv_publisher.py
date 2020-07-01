@@ -1,7 +1,5 @@
-from project.util.construct_scenario import (exchange,
-                                routing_key_smart_tv)
+from project.util.construct_scenario import (exchange)
 from project.util.config_broker import ConfigScenario
-from project.util.body_message import construct_message
 from threading import Thread
 
 
@@ -13,15 +11,3 @@ class SmartTvPublisher(ConfigScenario, Thread):
 
     def run(self):
         pass
-
-    def publish_status(self):
-        info = {'msg': 'Normal operation'}
-        message = construct_message('st_info',
-                                    'info',
-                                    info)
-
-        self.channel.basic_publish(
-            exchange=exchange,
-            routing_key=routing_key_smart_tv,
-            body=message,
-        )

@@ -1,53 +1,40 @@
-from project.util.construct_scenario import (exchange,
-                                routing_key_smartphone,
-                                routing_key_smart_tv,
-                                routing_key_baby_monitor)
+from project.util.construct_scenario import (
+    exchange,
+    bm_info,
+    st_info,
+)
 from project.util.config_broker import ConfigScenario
 from project.util.body_message import construct_message
 from threading import Thread
+from project import socketio
+import json
 
 
 class SmartphonePublisher(ConfigScenario, Thread):
-    def __init__(self):
+    def __init__(self, type, notification=None):
         ConfigScenario.__init__(self)
         Thread.__init__(self)
-        self.declare_exchange(exchange, 'direct')
+        self.declare_exchange(exchange, "direct")
+        self.type = type
+        self.notification = notification
 
     def run(self):
-        pass
-
-    def publish_status(self):
-        info = {'msg': 'Normal operation'}
-        message = construct_message('sm_info',
-                                    'info',
-                                    info)
-
-        self.channel.basic_publish(
-            exchange=exchange,
-            routing_key=routing_key_smartphone,
-            body=message,
-        )
+        if self.type == "confirmation":
+            self.publish_confirmation()
+        if self.type == "notification":
+            self.forward_message()
 
     def publish_confirmation(self):
-        confirmation = {'msg': 'Notification received!'}
-        message = construct_message('bm_msg',
-                                    'confirmation',
-                                    confirmation)
+        confirmation = json.dumps({"info": "Notification confirmed!"})
 
         self.channel.basic_publish(
-            exchange=exchange,
-            routing_key=routing_key_baby_monitor,
-            body=message,
+            exchange=exchange, routing_key=bm_info, body=confirmation,
         )
+        print("(Publish) SM|BM: ", confirmation)
 
     def forward_message(self):
-        notification = {'msg': 'Notification sent!'}
-        message = construct_message('st_msg',
-                                    'notification',
-                                    notification)
 
         self.channel.basic_publish(
-            exchange=exchange,
-            routing_key=routing_key_smart_tv,
-            body=message,
+            exchange=exchange, routing_key=st_info, body=self.notification,
         )
+        print("(Publish) SM|ST: ", self.notification)
