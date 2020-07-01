@@ -1,6 +1,6 @@
 from project.util.construct_scenario import (
     exchange,
-    bm_info,
+    bm_msg,
     st_info,
 )
 from project.util.config_broker import ConfigScenario
@@ -28,13 +28,12 @@ class SmartphonePublisher(ConfigScenario, Thread):
         confirmation = json.dumps({"info": "Notification confirmed!"})
 
         self.channel.basic_publish(
-            exchange=exchange, routing_key=bm_info, body=confirmation,
+            exchange=exchange, routing_key=bm_msg, body=confirmation,
         )
         print("(Publish) SM|BM: ", confirmation)
 
     def forward_message(self):
-
         self.channel.basic_publish(
-            exchange=exchange, routing_key=st_info, body=self.notification,
+            exchange=exchange, routing_key=st_info, body=json.dumps(self.notification),
         )
         print("(Publish) SM|ST: ", self.notification)

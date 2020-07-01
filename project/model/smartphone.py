@@ -1,4 +1,10 @@
 from project import db
+from threading import Semaphore
+
+
+control = True
+confirm_user = False
+mutex_confirm = Semaphore()
 
 
 class Smartphone(db.Model):

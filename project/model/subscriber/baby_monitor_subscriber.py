@@ -10,7 +10,8 @@ from project.util.construct_scenario import (
 from project.model.business.baby_monitor_business import check_confirm_notification
 from threading import Thread
 from project import socketio
-
+import json
+from project.model.smartphone import confirm_user
 
 class BabyMonitorSubscriber(ConfigScenario, Thread):
     def __init__(self):
@@ -41,7 +42,6 @@ class BabyMonitorSubscriber(ConfigScenario, Thread):
         self.channel.start_consuming()
 
     def callback_baby_monitor(self, ch, method, properties, body):
-        confirm = check_confirm_notification()
-        if confirm:
-            # TODO forçar geração status do bebe ser normal
-            pass
+        body = body.decode("UTF-8")
+        body = json.loads(body)
+        socketio.emit("BabyMonitorReceive", body)

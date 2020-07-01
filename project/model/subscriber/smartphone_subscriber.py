@@ -7,10 +7,12 @@ from project.model.business.smartphone_business import (
     forward_message_smart_tv,
     type_notification,
 )
+from project.model.smartphone import control, confirm_user, mutex_confirm
 from project import socketio
 from flask_socketio import emit
 from threading import Thread
 import json
+from time import sleep
 
 
 data = None
@@ -64,26 +66,30 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
         self.channel.start_consuming()
 
     def callback_babymonitor_sm(self, ch, method, properties, body):
+        global control
+        global confirm_user, mutex_confirm
+
         body = body.decode("UTF-8")
         body = json.loads(body)
         notification = check_is_notification(body)
         socketio.emit("SmartphoneReceive", body)
-        print('\nHERE DENIS', body, '\n')
         if notification:
             info = type_notification(body)
             socketio.emit("SmartphoneInformation", {"info": info})
-            print('\n\nBODY AQUIII', body)
-            confirm = wait_user_confirm()
-            if confirm:
+            if control:
+                control = False
+                thread_wait_user = Thread(target=wait_user_confirm, args=(body,))
+                thread_wait_user.start()
+            if confirm_user:
                 send_confirm_baby_monitor()
                 socketio.emit("SmartphoneSent", {"info": "Confirmation Sent to BabyMonitor!"})
-            else:
-                # Envio só a mensagem falando que é notificação
-                # Ou envio os dados da Emma também?
-                print(body)
-                forward_message_smart_tv(body)
-                socketio.emit("SmartphoneSent", {"info": "Notification Forward to Smart TV!"})
+                mutex_confirm.acquire()
+                confirm_user = False
+                mutex_confirm.release()
         else:
+            mutex_confirm.acquire()
+            control = True
+            mutex_confirm.release()
             socketio.emit("SmartphoneInformation", {"info": "Emma is fine."})
 
     def callback_smart_tv(self, ch, method, properties, body):

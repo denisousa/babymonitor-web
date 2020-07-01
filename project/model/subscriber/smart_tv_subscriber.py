@@ -3,6 +3,7 @@ from project.util.construct_scenario import exchange, queue_smart_tv, st_msg
 from project.model.business.smart_tv_business import check_available_tv
 from project import socketio
 from threading import Thread
+import json
 
 
 class SmartTvSubscriber(ConfigScenario, Thread):
@@ -30,6 +31,9 @@ class SmartTvSubscriber(ConfigScenario, Thread):
         self.channel.start_consuming()
 
     def callback(self, ch, method, properties, body):
+        body = body.decode("UTF-8")
+        body = json.loads(body)
+        socketio.emit("TvReceive", body)
         available = check_available_tv()
         if available:
             # TODO Envia mensagem no tópico smart_tv_msg

@@ -12,6 +12,7 @@ from project.model.subscriber.smartphone_subscriber import SmartphoneSubscriber
 from project.model.subscriber.smart_tv_subscriber import SmartTvSubscriber
 from project.model.publisher.smartphone_publisher import SmartphonePublisher
 from project.model.service.smart_tv_service import SmartTvService
+from project.model.smartphone import confirm_user, control, mutex_confirm
 
 
 @app.route("/", methods=["GET"])
@@ -89,10 +90,18 @@ def tv_desconnect():
 
 @socketio.on("confirmUser")
 def user_confirm():
+    global confirm_user, mutex_confirm
+    global control
+
+    mutex_confirm.acquire()
+    confirm_user = True
+    control = False
+    mutex_confirm.release()
+    SmartphonePublisher("confirmation").start()
+
     last_record = BabyMonitorService(BabyMonitorSend).last_record()
     user_confirm = {"id_notification": last_record["id"], "type": "confirm"}
     BabyMonitorService(BabyMonitorReceive).insert_data(user_confirm)
-    SmartphonePublisher("confirmation").start()
 
 
 @socketio.on("blockedTv")
