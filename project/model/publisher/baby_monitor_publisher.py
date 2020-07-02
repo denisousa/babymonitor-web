@@ -3,7 +3,6 @@ from project.util.construct_scenario import (
     bm_info,
 )
 from project.util.config_broker import ConfigScenario
-from project.util.body_message import construct_message
 from project.model.service.baby_monitor_service import BabyMonitorService
 from project.model.baby_monitor import BabyMonitorSend, BabyMonitorReceive
 from project.util.generate_data import data_from_baby
@@ -11,7 +10,6 @@ from project.util.clean_dict import clean_dict_baby_monitor
 from threading import Thread
 from project import socketio
 import json
-from datetime import datetime
 from project.util.generate_log import log
 import pika
 

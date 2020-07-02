@@ -1,18 +1,14 @@
 from project.util.construct_scenario import (
     exchange,
     bm_msg,
-    st_info,
     st_msg,
 )
 from project.util.config_broker import ConfigScenario
-from project.model.service.baby_monitor_service import BabyMonitorSend
 from project.model.service.baby_monitor_service import BabyMonitorService
 from project.model.baby_monitor import BabyMonitorSend, BabyMonitorReceive
 from threading import Thread
-from multiprocessing import Process
 from project import socketio
 import json
-from project.util.clean_dict import clean_dict_baby_monitor
 import pika
 
 
@@ -40,7 +36,10 @@ class SmartphonePublisher(ConfigScenario, Thread):
         )
         socketio.emit("SmartphoneSent", confirmation)
         last_record = BabyMonitorService(BabyMonitorSend).last_record()
-        user_confirm = {"id_notification": last_record["id"], "type": "confirm"}
+        user_confirm = {
+            "id_notification": last_record["id"],
+            "type": "confirm"
+        }
         BabyMonitorService(BabyMonitorReceive).insert_data(user_confirm)
 
         print("(Publish) SM|BM: ")
