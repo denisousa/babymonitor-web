@@ -7,6 +7,7 @@ from project.util.construct_scenario import (
 from project.util.config_broker import ConfigScenario
 from project.model.service.baby_monitor_service import BabyMonitorSend
 from project.model.service.baby_monitor_service import BabyMonitorService
+from project.model.baby_monitor import BabyMonitorSend, BabyMonitorReceive
 from threading import Thread
 from multiprocessing import Process
 from project import socketio
@@ -38,6 +39,10 @@ class SmartphonePublisher(ConfigScenario, Thread):
             body=json.dumps(confirmation),
         )
         socketio.emit("SmartphoneSent", confirmation)
+        last_record = BabyMonitorService(BabyMonitorSend).last_record()
+        user_confirm = {"id_notification": last_record["id"], "type": "confirm"}
+        BabyMonitorService(BabyMonitorReceive).insert_data(user_confirm)
+
         print("(Publish) SM|BM: ")
 
     def forward_message(self):

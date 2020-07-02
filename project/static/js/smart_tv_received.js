@@ -10,17 +10,15 @@ document.querySelector('#btn-tv').onclick = function () {
         disconnect_tv = false;
     } else {
         disconnect_tv = true;
-        socket.emit('tvDesconnect');
+        socket.emit('tvDisconnect');
     }
 };
 
 document.querySelector('#btn-tv-blocked').onclick = function () {
     block_tv = !block_tv;
     if (block_tv) {
-        console.log('Tv blocked');
         socket.emit('tvBlocked', true);
     } else {
-        console.log('Tv available');
         socket.emit('tvBlocked', false);
     }
 };

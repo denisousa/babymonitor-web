@@ -1,4 +1,7 @@
-from project.util.construct_scenario import exchange, st_msg, st_info
+from project.util.construct_scenario import (
+    exchange,
+    st_info
+)
 from project.util.config_broker import ConfigScenario
 from project.model.service.smart_tv_service import SmartTvService
 from threading import Thread

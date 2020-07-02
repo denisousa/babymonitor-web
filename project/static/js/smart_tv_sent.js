@@ -1,5 +1,4 @@
 socket.on('TvSent', function (msg) {
-    console.log('Aqui cara tá funcionando')
     document.querySelector("#tv-sent").innerHTML = '';
     for (data in msg) {
         var p = document.createElement("p");

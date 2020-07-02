@@ -10,7 +10,7 @@ document.querySelector('#btn-babymonitor').onclick = function () {
         disconnect_bm = false;
     } else {
         disconnect_bm = true;
-        socket.emit('babymonitorDesconnect');
+        socket.emit('babymonitorDisconnect');
     }
 };
 

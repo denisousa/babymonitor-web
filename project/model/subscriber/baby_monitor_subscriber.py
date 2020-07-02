@@ -13,6 +13,7 @@ from project import socketio
 import json
 from project.model.smartphone import confirm_user
 
+
 class BabyMonitorSubscriber(ConfigScenario, Thread):
     def __init__(self):
         ConfigScenario.__init__(self)
@@ -31,7 +32,10 @@ class BabyMonitorSubscriber(ConfigScenario, Thread):
         raise SystemExit()
 
     def check_baby_status(self):
-        print(" [*] BabyMonitor waiting for Smartphone messages. To exit press CTRL+C")
+        print(
+            " [*] BabyMonitor waiting for Smartphone messages." +
+            "To exit press CTRL+C"
+        )
 
         self.channel.basic_consume(
             queue=queue_baby_monitor,
@@ -46,4 +50,3 @@ class BabyMonitorSubscriber(ConfigScenario, Thread):
         body = body.decode("UTF-8")
         body = json.loads(body)
         socketio.emit("BabyMonitorReceive", body)
-        print('Confirmado Denis! BABYMONITOR FALANDO \n\n\n\n\n\n\n')

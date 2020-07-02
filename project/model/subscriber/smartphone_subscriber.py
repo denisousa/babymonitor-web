@@ -3,7 +3,6 @@ from project.util.construct_scenario import (
     exchange,
     queue_smartphone_bm,
     queue_smartphone_st,
-    queue_smart_tv,
     bm_info,
     st_msg,
     st_info,
@@ -15,7 +14,11 @@ from project.model.business.smartphone_business import (
     forward_message_smart_tv,
     type_notification,
 )
-from project.model.smartphone import control, confirm_user, mutex_confirm
+from project.model.smartphone import (
+    control,
+    confirm_user,
+    mutex_confirm
+)
 from project import socketio
 from threading import Thread
 import threading
@@ -56,7 +59,8 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
 
     def consume_message_baby_monitor(self):
         print(
-            " [*] Smartphone waiting for messages from Baby Monitor. To exit press CTRL+C"
+            " [*] Smartphone waiting for messages from Baby Monitor." +
+            " To exit press CTRL+C"
         )
         self.channel.basic_consume(
             queue=queue_smartphone_bm,
@@ -67,7 +71,10 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
         self.channel.start_consuming()
 
     def consume_message_tv(self):
-        print(" [*] Smartphone waiting for messages from TV. To exit press CTRL+C")
+        print(
+            " [*] Smartphone waiting for messages from TV." +
+            " To exit press CTRL+C"
+        )
 
         self.channel.basic_consume(
             queue=queue_smartphone_st,
@@ -92,24 +99,20 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
             socketio.emit("SmartphoneInformation", {"info": "Emma is fine."})
 
     def callback_smart_tv(self, ch, method, properties, body):
-        ch.basic_ack(
-            delivery_tag=method.delivery_tag
-        )
+        ch.basic_ack(delivery_tag=method.delivery_tag)
         body = body.decode("UTF-8")
         body = json.loads(body)
-        socketio.emit('SmartphoneReceive', body)
-        if body['block']:
+        socketio.emit("SmartphoneReceive", body)
+        if body["block"]:
             socketio.emit(
-                'SmartphoneInformation',
-                {'info': 'TV couldn\'t show message'}
+                "SmartphoneInformation",
+                {"info": "TV couldn't show message"}
             )
             # forward again
             forward_message_smart_tv()
         else:
             socketio.emit(
-                'SmartphoneInformation',
-                {'info': 'TV just showed the message'}
+                "SmartphoneInformation", {"info": "TV just showed the message"}
             )
             # send confirmation to BM
-            SmartphonePublisher('confirmation').start()
-            print('Confirmado Denis! SMARPHONE FALANDO \n\n\n\n\n\n\n')
+            SmartphonePublisher("confirmation").start()

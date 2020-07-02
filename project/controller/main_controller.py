@@ -5,16 +5,16 @@ from flask_socketio import emit
 from project import app, socketio
 from time import sleep
 from project.util.clean_dict import clean_dict_baby_monitor
-from project.model.subscriber.smartphone_subscriber import SmartphoneSubscriber
 from project.model.publisher.baby_monitor_publisher import BabyMonitorPublisher
-from project.model.publisher.smart_tv_publisher import SmartTvPublisher
 from project.model.subscriber.baby_monitor_subscriber import BabyMonitorSubscriber
-from project.model.subscriber.smartphone_subscriber import SmartphoneSubscriber
-from project.model.subscriber.smart_tv_subscriber import SmartTvSubscriber
 from project.model.publisher.smartphone_publisher import SmartphonePublisher
+from project.model.subscriber.smartphone_subscriber import SmartphoneSubscriber
+from project.model.publisher.smart_tv_publisher import SmartTvPublisher
+from project.model.subscriber.smart_tv_subscriber import SmartTvSubscriber
 from project.model.service.smart_tv_service import SmartTvService
 from project.model.smartphone import confirm_user, control, mutex_confirm
 from project.model.smart_tv import block
+
 # from project.util.wait_user_confirm import checkUserConfirm
 
 
@@ -46,8 +46,8 @@ def babymonitor_connect():
             break
 
 
-@socketio.on("babymonitorDesconnect")
-def babymonitor_desconnect():
+@socketio.on("babymonitorDisconnect")
+def babymonitor_disconnect():
     global bm_on
     bm_on = False
 
@@ -73,8 +73,8 @@ def smartphone_connect():
             break
 
 
-@socketio.on("smartphoneDesconnect")
-def smartphone_desconnect():
+@socketio.on("smartphoneDisconnect")
+def smartphone_disconnect():
     global sp_on
     sp_on = False
 
@@ -84,6 +84,7 @@ def tv_connect():
     global tv_on
     tv_on = True
     subscriber = SmartTvSubscriber()
+    SmartTvService().insert_data(dict(block=False))
     subscriber.start()
     while True:
         sleep(1)
@@ -92,8 +93,8 @@ def tv_connect():
             break
 
 
-@socketio.on("tvDesconnect")
-def tv_desconnect():
+@socketio.on("tvDisconnect")
+def tv_disconnect():
     global tv_on
     tv_on = False
 
@@ -102,15 +103,11 @@ def tv_desconnect():
 def user_confirm():
     SmartphonePublisher("confirmation").start()
 
-    last_record = BabyMonitorService(BabyMonitorSend).last_record()
-    user_confirm = {"id_notification": last_record["id"], "type": "confirm"}
-    BabyMonitorService(BabyMonitorReceive).insert_data(user_confirm)
-
 
 @socketio.on("tvBlocked")
 def blocked_tv(blocked):
     if blocked:
-        info = {"info": "Tv blcoked"}
+        info = {"info": "Tv blocked"}
         socketio.emit("TvInformation", info)
         socketio.emit("RedColor")
         SmartTvService().insert_data(dict(block=True))
