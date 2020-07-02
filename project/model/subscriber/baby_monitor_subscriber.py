@@ -2,7 +2,7 @@ from project.util.config_broker import ConfigScenario
 from project.util.construct_scenario import (
     exchange,
     queue_baby_monitor,
-    queue_smartphone,
+    queue_smartphone_bm,
     queue_smart_tv,
     bm_info,
     bm_msg
@@ -19,7 +19,7 @@ class BabyMonitorSubscriber(ConfigScenario, Thread):
         Thread.__init__(self)
         self.declare_exchange(exchange, "direct")
         self.declare_queue(queue_baby_monitor)
-        self.declare_queue(queue_smartphone)
+        self.declare_queue(queue_smartphone_bm)
         self.declare_queue(queue_smart_tv)
         self.bind_exchange_queue(exchange, queue_baby_monitor, bm_msg)
 
@@ -36,12 +36,14 @@ class BabyMonitorSubscriber(ConfigScenario, Thread):
         self.channel.basic_consume(
             queue=queue_baby_monitor,
             on_message_callback=self.callback_baby_monitor,
-            auto_ack=True,
+            auto_ack=False,
         )
 
         self.channel.start_consuming()
 
     def callback_baby_monitor(self, ch, method, properties, body):
+        ch.basic_ack(delivery_tag=method.delivery_tag)
         body = body.decode("UTF-8")
         body = json.loads(body)
         socketio.emit("BabyMonitorReceive", body)
+        print('Confirmado Denis! BABYMONITOR FALANDO \n\n\n\n\n\n\n')

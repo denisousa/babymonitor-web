@@ -13,6 +13,7 @@ from project import socketio
 import json
 from datetime import datetime
 from project.util.generate_log import log
+import pika
 
 
 class BabyMonitorPublisher(ConfigScenario, Thread):
@@ -30,8 +31,11 @@ class BabyMonitorPublisher(ConfigScenario, Thread):
         self.channel.basic_publish(
             exchange=exchange,
             routing_key=bm_info,
-            body=json.dumps(status)
-        )   
+            properties=pika.BasicProperties(
+                delivery_mode=2,
+            ),
+            body=json.dumps(status),
+        )
         socketio.emit("BabyMonitorSent", status)
         print("(Publish) BM: ", status)
 

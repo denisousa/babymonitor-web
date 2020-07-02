@@ -27,7 +27,7 @@ class BabyMonitorReceive(db.Model):
     type = db.Column(db.String(80), nullable=True)
     time = db.Column(db.DateTime, nullable=False)
     id_notification = db.Column(db.Integer, db.ForeignKey("baby_monitor_send.id"))
-
+    confirm_user = db.Column(db.Boolean, nullable=True)
 
 ### Show subscriber
 ### quando o smartphone mostra dados da Emma?

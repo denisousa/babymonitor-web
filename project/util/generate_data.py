@@ -17,7 +17,6 @@ def configure_data(function):
         # if flag is 'force_fine', it means we should generate a
         # data where the baby is all fine
         if flag == "force_fine":
-            print(f'Changes {wrapped.calls} - Max {max_no_changes}')
             wrapped.calls = 0
             max_no_changes = random.randint(5, 10)
             return function("force_fine")
@@ -31,23 +30,23 @@ def configure_data(function):
                 # a new random status is generated
                 # otherwise, the previous status is repeated
                 if wrapped.calls == 1:
-                    print(f'Changes {wrapped.calls} - Max {max_no_changes} new_status')
+
                     return function("new_status")
-                print(f'Changes {wrapped.calls} - Max {max_no_changes} repeat_status')
+
                 return function("repeat_status")
             # if the maximum is reached,
             # a new random status is generated.
             else:
-                print(f'Changes {wrapped.calls} - Max {max_no_changes}')
+
                 wrapped.calls = 0
                 max_no_changes = random.randint(5, 10)
-                print(f'Changes {wrapped.calls} - Max {max_no_changes} new_status')
+
                 return function("new_status")
 
         # if flag is 1, it means that the previous
         # status should be repeated
         if flag == "repeat_status":
-            print(f'Changes {wrapped.calls} - Max {max_no_changes} repeat_status')
+
             wrapped.calls += 1
             return function("repeat_status")
 
@@ -58,7 +57,6 @@ def configure_data(function):
 @configure_data
 def data_from_baby(flag: str):
     data = {}
-    print(f'generate chamado com flag {flag}')
     if flag == "force_fine":
         data["crying"] = False
         data["sleeping"] = random.choices([True, False], [0.75, 0.25], k=1)[0]

@@ -10,7 +10,7 @@ class SmartTvService():
 
     def last_record(self):
         data = SmartTv().query.order_by(
-            self.database.id.desc()).first()
+            SmartTv.id.desc()).first()
         if not data:
             return data
 

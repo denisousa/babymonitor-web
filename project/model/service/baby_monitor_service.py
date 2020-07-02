@@ -30,3 +30,14 @@ class BabyMonitorService:
             return data
 
         return data.__dict__
+
+    def get_by_id(self, id):
+        return BabyMonitorSend.query.filter_by(id=id).first()
+
+    def penultimate_record(self):
+        last = self.last_record()
+        penultimate = self.get_by_id(last['id']-1)
+        if not penultimate:
+            return None
+
+        return penultimate.__dict__

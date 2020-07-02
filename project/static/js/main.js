@@ -23,7 +23,6 @@ socket.on('BabyMonitorSent', function(msg) {
             p.appendChild(value);
             document.querySelector("#babymonitor-sent").appendChild(p);
         }
-        // socket.emit('babymonitor', { msg : null });
     } else {
         document.querySelector("#babymonitor-sent").innerHTML = '';
     }
@@ -31,7 +30,7 @@ socket.on('BabyMonitorSent', function(msg) {
 
 socket.on('BabyMonitorReceive', function(msg) {
     document.querySelector("#babymonitor-receive").innerHTML = '';
-    if (!disconnect_sm) {
+    if (!disconnect_bm) {
         for(data in msg){
             var p = document.createElement("p");
             var value = document.createTextNode(data + ": " + msg[data]);

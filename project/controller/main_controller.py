@@ -7,12 +7,15 @@ from time import sleep
 from project.util.clean_dict import clean_dict_baby_monitor
 from project.model.subscriber.smartphone_subscriber import SmartphoneSubscriber
 from project.model.publisher.baby_monitor_publisher import BabyMonitorPublisher
+from project.model.publisher.smart_tv_publisher import SmartTvPublisher
 from project.model.subscriber.baby_monitor_subscriber import BabyMonitorSubscriber
 from project.model.subscriber.smartphone_subscriber import SmartphoneSubscriber
 from project.model.subscriber.smart_tv_subscriber import SmartTvSubscriber
 from project.model.publisher.smartphone_publisher import SmartphonePublisher
 from project.model.service.smart_tv_service import SmartTvService
 from project.model.smartphone import confirm_user, control, mutex_confirm
+from project.model.smart_tv import block
+# from project.util.wait_user_confirm import checkUserConfirm
 
 
 @app.route("/", methods=["GET"])
@@ -29,6 +32,8 @@ tv_on = False
 def babymonitor_connect():
     global bm_on
     bm_on = True
+    info = {"info": "Baby Monitor Start"}
+    socketio.emit("BabyMonitorInformation", info)
     subscriber = BabyMonitorSubscriber()
     subscriber.start()
     while True:
@@ -51,15 +56,20 @@ def babymonitor_desconnect():
 def smartphone_connect():
     global sp_on
     sp_on = True
+    info = {"info": "Smartphone Start"}
+    socketio.emit("SmartphoneInformation", info)
+    # check_user_confirm = checkUserConfirm()
     subscriber_bm = SmartphoneSubscriber("babymonitor")
     subscriber_tv = SmartphoneSubscriber("smart_tv")
     subscriber_bm.start()
     subscriber_tv.start()
+    # check_user_confirm.start()
     while True:
         sleep(1)
         if not sp_on:
             subscriber_bm.stop()
             subscriber_tv.stop()
+            # check_user_confirm.stop()
             break
 
 
@@ -90,13 +100,6 @@ def tv_desconnect():
 
 @socketio.on("confirmUser")
 def user_confirm():
-    global confirm_user, mutex_confirm
-    global control
-
-    mutex_confirm.acquire()
-    confirm_user = True
-    control = False
-    mutex_confirm.release()
     SmartphonePublisher("confirmation").start()
 
     last_record = BabyMonitorService(BabyMonitorSend).last_record()
@@ -104,34 +107,15 @@ def user_confirm():
     BabyMonitorService(BabyMonitorReceive).insert_data(user_confirm)
 
 
-@socketio.on("blockedTv")
+@socketio.on("tvBlocked")
 def blocked_tv(blocked):
     if blocked:
-        data = {"blocked": True}
+        info = {"info": "Tv blcoked"}
+        socketio.emit("TvInformation", info)
+        socketio.emit("RedColor")
+        SmartTvService().insert_data(dict(block=True))
     else:
-        data = {"blocked": False}
-    SmartTvService().insert_data(data)
-
-
-"""@socketio.on("smartphone")
-def smartphone_message(data):
-    sleep(1)
-    SmartphoneController().start_subscriber()
-    #import ipdb; ipdb.set_trace()
-    msg = clean_dict_baby_monitor(
-        BabyMonitorService(BabyMonitorSend).last_record())
-    if msg:
-        if msg["type"] == "notification":
-
-            message = ""
-            if not msg["breathing"]:
-                message = f"Emma hasn't been breathing for {msg['time_no_breathing']} seconds."
-
-            elif msg["crying"]:
-                message = "Emma is crying."
-
-            emit("SmartphoneInformation", {"info": message})
-        else:
-            emit("SmartphoneInformation", {"info": "Emma is fine."})
-    emit("SmartphoneReceive", msg)"""
-
+        info = {"info": "Tv available"}
+        socketio.emit("TvInformation", info)
+        socketio.emit("NormalColor")
+        SmartTvService().insert_data(dict(block=False))

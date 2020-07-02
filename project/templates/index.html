@@ -97,7 +97,7 @@
                 <div class="card system-info sent">
                     <h5 class="card-header text-center">Sent</h5>
                     <div class="card-body">
-                        <p class="card-text">Nothing to be sent</p>
+                        <div id="tv-sent"></div>
                     </div>
                 </div>
             </div>
@@ -172,7 +172,7 @@
 
             <div class="container col-sm smarttv">
                 <div class="card system-info information">
-                    <h5 class="card-header text-center">Information</h5>
+                    <h5 class="card-header text-center" id="tv-color">Information</h5>
                     <div class="card-body">
                         <div id="tv-information"></div>
                     </div>
@@ -211,7 +211,7 @@
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smartphone_received.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smartphone_sent.js') }}"></script>
-    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smart_tv_received.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smart_tv_sent.js') }}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smart_tv_received.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/log.js') }}"></script>
 </html>

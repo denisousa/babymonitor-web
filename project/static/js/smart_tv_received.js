@@ -1,4 +1,5 @@
 var disconnect_tv = false;
+var block_tv = false;
 var data_tv = false;
 
 
@@ -14,7 +15,14 @@ document.querySelector('#btn-tv').onclick = function () {
 };
 
 document.querySelector('#btn-tv-blocked').onclick = function () {
-    socket.emit('tvBlocked');
+    block_tv = !block_tv;
+    if (block_tv) {
+        console.log('Tv blocked');
+        socket.emit('tvBlocked', true);
+    } else {
+        console.log('Tv available');
+        socket.emit('tvBlocked', false);
+    }
 };
 
 socket.on('TvReceive', function (msg) {
@@ -25,9 +33,10 @@ socket.on('TvReceive', function (msg) {
             var value = document.createTextNode(data + ": " + msg[data]);
             p.appendChild(value);
             document.querySelector("#tv-receive").appendChild(p);
+            setTimeout(function () {
+                document.querySelector("#tv-receive").innerHTML = '';
+            }, 3000);
         }
-    } else {
-        document.querySelector("#tv-receive").innerHTML = '';
     }
 });
 
@@ -39,8 +48,19 @@ socket.on('TvInformation', function (msg) {
             var value = document.createTextNode(data + ": " + msg[data]);
             p.appendChild(value);
             document.querySelector("#tv-information").appendChild(p);
+            setTimeout(function () {
+                document.querySelector("#tv-information").innerHTML = '';
+            }, 3000);
         }
-    } else {
-        document.querySelector("#tv-information").innerHTML = '';
     }
+});
+
+socket.on('RedColor', function (msg) {
+    document.querySelector("#tv-color").style.backgroundColor = "#CD3333";
+    document.querySelector("#tv-color").style.color = "#ffff";
+});
+
+socket.on('NormalColor', function (msg) {
+    document.querySelector("#tv-color").style.backgroundColor = "white";
+    document.querySelector("#tv-color").style.color = "black";
 });

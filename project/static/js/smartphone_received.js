@@ -23,9 +23,10 @@ socket.on('SmartphoneReceive', function (msg) {
             p.appendChild(value);
             document.querySelector("#smartphone-receive").appendChild(p);
         }
-        //socket.emit('smartphone', null);
     } else {
-        document.querySelector("#smartphone-receive").innerHTML = '';
+        setTimeout(function(){
+            document.querySelector("#smartphone-receive").innerHTML = '';
+        }, 1000);
     }
 });
 
@@ -39,6 +40,8 @@ socket.on('SmartphoneInformation', function (msg) {
             document.querySelector("#smartphone-information").appendChild(p);
         }
     } else {
-        document.querySelector("#smartphone-information").innerHTML = '';
+        setTimeout(function(){
+            document.querySelector("#smartphone-receive").innerHTML = '';
+        }, 3000);
     }
 });
