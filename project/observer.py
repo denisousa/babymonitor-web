@@ -1,8 +1,10 @@
-import sys
-from pyrabbit.api import Client
 import pika
 import threading
 import time
+from pyrabbit.api import Client
+from model.service.observer_service import ObserverService
+from model.observer_model import ObserverModel
+from controller.main_controller import blocked_tv
 
 
 class Observer(threading.Thread):
@@ -15,6 +17,8 @@ class Observer(threading.Thread):
         self.queue = "observer"
         self.channel.queue_declare(self.queue)
         self.is_adapted = is_adapted
+        self.notification = False
+        self.adaptation = False
 
     def get_bindings(self):
         client = Client("localhost:15672", "guest", "guest")
@@ -40,7 +44,6 @@ class Observer(threading.Thread):
         return bindings
 
     def run(self):
-
         def callback(ch, method, properties, body):
             print(
                 " [OBSERVER] Receive Topic: %r | Message: %r"
@@ -48,15 +51,33 @@ class Observer(threading.Thread):
             )
 
         self.channel.basic_consume(
-            queue=self.queue,
-            on_message_callback=callback,
-            auto_ack=True
+            queue=self.queue, on_message_callback=callback, auto_ack=True
         )
 
         self.channel.start_consuming()
 
+    def read_message(self, message, source):
+        if message["type"] == "notification":
+            if self.adaptation:
+                ObserverService(ObserverModel).insert_data({"success": False})
+            self.notification = True
+
+        if message["type"] == "confirmation":
+            if self.adaptation:
+                ObserverService(ObserverModel).insert_data({"success": True})
+                self.adaptation = False
+            self.notification = False
+
+        if message["type"] == "status" and source == "st_info":
+            if message["block"]:
+                self.adaptation = True
+                self.adapt_tv()
+
+    def adapt_tv(self):
+        blocked_tv(False)
+
     # def read_message(self, message, bindings):
-    #     global semaphore, time_no_response, init, count
+    #     global semaphore, time_no_response, init, counttu
     #     if "NOTIFICATION" in message:
     #         count += 1
     #         if count == 1:

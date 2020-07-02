@@ -19,13 +19,11 @@ class BabyMonitorService:
             BabyMonitorSend.query.filter_by(id=last_record.id).update(crying)
         if not data["breathing"]:
             time_no_breathing = {"time_no_breathing": data["time_no_breathing"]}
-            BabyMonitorSend.query.filter_by(
-                id=last_record.id).update(time_no_breathing)
+            BabyMonitorSend.query.filter_by(id=last_record.id).update(time_no_breathing)
         db.session.commit()
 
     def last_record(self):
-        data = self.database().query.order_by(
-            self.database.id.desc()).first()
+        data = self.database().query.order_by(self.database.id.desc()).first()
         if not data:
             return data
 
@@ -36,7 +34,7 @@ class BabyMonitorService:
 
     def penultimate_record(self):
         last = self.last_record()
-        penultimate = self.get_by_id(last['id']-1)
+        penultimate = self.get_by_id(last["id"] - 1)
         if not penultimate:
             return None
 

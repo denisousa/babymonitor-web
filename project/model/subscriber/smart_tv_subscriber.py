@@ -4,7 +4,6 @@ from project.util.construct_scenario import (
     queue_smart_tv,
     st_msg
 )
-from project.model.business.smartphone_business import type_notification
 from project import socketio
 from threading import Thread
 import json

@@ -24,7 +24,7 @@ from threading import Thread
 import threading
 import json
 from project.model.publisher.smartphone_publisher import SmartphonePublisher
-
+from time import sleep
 
 data = None
 
@@ -103,6 +103,7 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
         body = body.decode("UTF-8")
         body = json.loads(body)
         socketio.emit("SmartphoneReceive", body)
+        sleep(1)
         if body["block"]:
             socketio.emit(
                 "SmartphoneInformation",

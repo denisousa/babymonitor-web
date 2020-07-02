@@ -1,18 +1,13 @@
-from project.model.baby_monitor import BabyMonitorSend, BabyMonitorReceive
-from project.model.service.baby_monitor_service import BabyMonitorService
 from flask import render_template
 from flask_socketio import emit
 from project import app, socketio
 from time import sleep
-from project.util.clean_dict import clean_dict_baby_monitor
 from project.model.publisher.baby_monitor_publisher import BabyMonitorPublisher
 from project.model.subscriber.baby_monitor_subscriber import BabyMonitorSubscriber
 from project.model.publisher.smartphone_publisher import SmartphonePublisher
 from project.model.subscriber.smartphone_subscriber import SmartphoneSubscriber
-from project.model.publisher.smart_tv_publisher import SmartTvPublisher
 from project.model.subscriber.smart_tv_subscriber import SmartTvSubscriber
 from project.model.service.smart_tv_service import SmartTvService
-from project.model.smartphone import confirm_user, control, mutex_confirm
 from project.model.smart_tv import block
 
 # from project.util.wait_user_confirm import checkUserConfirm
@@ -104,9 +99,10 @@ def user_confirm():
     SmartphonePublisher("confirmation").start()
 
 
-@socketio.on("tvBlocked")
-def blocked_tv(blocked):
+@socketio.on("tvBlock")
+def block_tv(blocked):
     if blocked:
+        print('YES BLOCKED HERE \n\n\n')
         info = {"info": "Tv blocked"}
         socketio.emit("TvInformation", info)
         socketio.emit("RedColor")

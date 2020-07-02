@@ -14,12 +14,12 @@ document.querySelector('#btn-tv').onclick = function () {
     }
 };
 
-document.querySelector('#btn-tv-blocked').onclick = function () {
+document.querySelector('#btn-tv-block').onclick = function () {
     block_tv = !block_tv;
     if (block_tv) {
-        socket.emit('tvBlocked', true);
+        socket.emit('tvBlock', true);
     } else {
-        socket.emit('tvBlocked', false);
+        socket.emit('tvBlock', false);
     }
 };
 
