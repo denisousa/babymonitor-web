@@ -8,7 +8,9 @@ from project.model.publisher.smartphone_publisher import SmartphonePublisher
 from project.model.subscriber.smartphone_subscriber import SmartphoneSubscriber
 from project.model.subscriber.smart_tv_subscriber import SmartTvSubscriber
 from project.model.service.smart_tv_service import SmartTvService
-from project.model.smart_tv import block
+from project.model.service.baby_monitor_service import BabyMonitorService
+from project.model.baby_monitor import BabyMonitorReceive, BabyMonitorSend
+from project.solution.observer import Observer
 
 # from project.util.wait_user_confirm import checkUserConfirm
 
@@ -21,6 +23,7 @@ def index():
 bm_on = False
 sp_on = False
 tv_on = False
+ob_on = False
 
 
 @socketio.on("babymonitorConnect")
@@ -94,15 +97,38 @@ def tv_disconnect():
     tv_on = False
 
 
+@socketio.on("observerConnect")
+def observer_connect():
+    global ob_on
+    observer = Observer()
+    observer.block_tv = block_tv
+    observer.start()
+    while True:
+        if not sp_on:
+            observer.stop()
+            break
+
+
+@socketio.on("observerDisconnect")
+def observer_disconnect():
+    global tv_on
+    tv_on = False
+    print("Observer close connection!")
+
+
 @socketio.on("confirmUser")
 def user_confirm():
+    last_send = BabyMonitorService(BabyMonitorSend).last_record()
+    id_notification = last_send["id"]
+    BabyMonitorService(BabyMonitorReceive).insert_data(
+        dict(id_notification=id_notification)
+    )
     SmartphonePublisher("confirmation").start()
 
 
 @socketio.on("tvBlock")
 def block_tv(blocked):
     if blocked:
-        print('YES BLOCKED HERE \n\n\n')
         info = {"info": "Tv blocked"}
         socketio.emit("TvInformation", info)
         socketio.emit("RedColor")
@@ -112,3 +138,5 @@ def block_tv(blocked):
         socketio.emit("TvInformation", info)
         socketio.emit("NormalColor")
         SmartTvService().insert_data(dict(block=False))
+    last_data = SmartTvService().last_record()
+    print('\n\n FROM BLOCK TV ', last_data)

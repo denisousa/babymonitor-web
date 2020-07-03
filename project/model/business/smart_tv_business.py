@@ -7,4 +7,3 @@ def check_available_tv():
         return False
 
     return True
-

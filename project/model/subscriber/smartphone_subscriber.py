@@ -13,6 +13,7 @@ from project.model.business.smartphone_business import (
     send_confirm_baby_monitor,
     forward_message_smart_tv,
     type_notification,
+    check_user_confirm
 )
 from project.model.smartphone import (
     control,
@@ -35,7 +36,7 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
         Thread.__init__(self)
         self._stop = threading.Event()
         self.type_consume = type_consume
-        self.declare_exchange(exchange, "direct")
+        self.declare_exchange(exchange, "topic")
         self.declare_queue(queue_smartphone_bm)
         self.declare_queue(queue_smartphone_st)
 
@@ -104,7 +105,8 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
         body = json.loads(body)
         socketio.emit("SmartphoneReceive", body)
         sleep(1)
-        if body["block"]:
+        confirm = check_user_confirm()
+        if body["block"] and not confirm:
             socketio.emit(
                 "SmartphoneInformation",
                 {"info": "TV couldn't show message"}

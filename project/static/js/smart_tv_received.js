@@ -8,9 +8,17 @@ document.querySelector('#btn-tv').onclick = function () {
     if (data_tv) {
         socket.emit('tvConnect');
         disconnect_tv = false;
+        changeColor("#17a2b8", "white", ".tv")
+        setTimeout(function(){
+            changeColor("white", "black", ".tv")
+        }, 1000);
     } else {
         disconnect_tv = true;
         socket.emit('tvDisconnect');
+        changeColor("#CD5C5C", "white", ".tv")
+        setTimeout(function(){
+            changeColor("white", "black", ".tv")
+        }, 1000);
     }
 };
 
@@ -54,11 +62,11 @@ socket.on('TvInformation', function (msg) {
 });
 
 socket.on('RedColor', function (msg) {
-    document.querySelector("#tv-color").style.backgroundColor = "#CD3333";
-    document.querySelector("#tv-color").style.color = "#ffff";
+    document.querySelector("#block").style.backgroundColor = "#CD3333";
+    document.querySelector("#block").style.color = "#ffff";
 });
 
 socket.on('NormalColor', function (msg) {
-    document.querySelector("#tv-color").style.backgroundColor = "white";
-    document.querySelector("#tv-color").style.color = "black";
+    document.querySelector("#block").style.backgroundColor = "white";
+    document.querySelector("#block").style.color = "black";
 });

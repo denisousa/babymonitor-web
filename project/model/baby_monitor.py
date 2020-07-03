@@ -1,5 +1,5 @@
 from project import db
-
+from datetime import datetime
 
 # Babymonitor -> envia dados + status ou dados + notificação
 # Babymonitor -> recebe confirmações
@@ -23,10 +23,9 @@ class BabyMonitorReceive(db.Model):
 
     __tablename__ = "baby_monitor_receive"
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
-    type = db.Column(db.String(80), nullable=True)
+    type = db.Column(db.String(80), nullable=True, default='confirmation')
     time = db.Column(db.DateTime, nullable=False)
     id_notification = db.Column(db.Integer, db.ForeignKey("baby_monitor_send.id"))
-    confirm_user = db.Column(db.Boolean, nullable=True)
 
 
 ### Show subscriber

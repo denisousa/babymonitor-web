@@ -14,7 +14,7 @@ class SmartTvPublisher(ConfigScenario, Thread):
     def __init__(self):
         ConfigScenario.__init__(self)
         Thread.__init__(self)
-        self.declare_exchange(exchange, "direct")
+        self.declare_exchange(exchange, "topic")
 
     def run(self):
         last = SmartTvService().last_record()

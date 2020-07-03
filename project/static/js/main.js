@@ -2,15 +2,22 @@ var socket = io.connect('http://localhost:5000');
 var disconnect_bm = false;
 var data_bm = false;
 
-
 document.querySelector('#btn-babymonitor').onclick = function () {
     data_bm = !data_bm
     if(data_bm) {
         socket.emit('babymonitorConnect');
         disconnect_bm = false;
+        changeColor("#17a2b8", "white", ".bm")
+        setTimeout(function(){
+            changeColor("white", "black", ".bm")
+        }, 1000);
     } else {
         disconnect_bm = true;
         socket.emit('babymonitorDisconnect');
+        changeColor("#CD5C5C", "white", ".bm")
+        setTimeout(function(){
+            changeColor("white", "black", ".bm")
+        }, 1000);
     }
 };
 

@@ -4,21 +4,18 @@ from project.util.construct_scenario import (
     queue_baby_monitor,
     queue_smartphone_bm,
     queue_smart_tv,
-    bm_info,
     bm_msg
 )
-from project.model.business.baby_monitor_business import check_confirm_notification
 from threading import Thread
 from project import socketio
 import json
-from project.model.smartphone import confirm_user
 
 
 class BabyMonitorSubscriber(ConfigScenario, Thread):
     def __init__(self):
         ConfigScenario.__init__(self)
         Thread.__init__(self)
-        self.declare_exchange(exchange, "direct")
+        self.declare_exchange(exchange, "topic")
         self.declare_queue(queue_baby_monitor)
         self.declare_queue(queue_smartphone_bm)
         self.declare_queue(queue_smart_tv)

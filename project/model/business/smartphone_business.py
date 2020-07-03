@@ -25,7 +25,6 @@ def send_confirm_baby_monitor():
 
 
 def check_user_confirm():
-    global user_confirm
     data_send = BabyMonitorService(BabyMonitorSend).last_record()
     data_receive = BabyMonitorService(BabyMonitorReceive).last_record()
     if data_receive:

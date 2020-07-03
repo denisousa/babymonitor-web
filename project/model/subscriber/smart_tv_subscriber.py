@@ -15,7 +15,7 @@ class SmartTvSubscriber(ConfigScenario, Thread):
     def __init__(self):
         ConfigScenario.__init__(self)
         Thread.__init__(self)
-        self.declare_exchange(exchange, "direct")
+        self.declare_exchange(exchange, "topic")
         self.declare_queue(queue_smart_tv)
         self.bind_exchange_queue(exchange, queue_smart_tv, st_msg)
 

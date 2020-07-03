@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="observer-value">
-                    <input type="checkbox" id = "adaptation">
+                    <input type="checkbox" id="adaptation" autocomplete="off">
                     <label for="adaptation" style="color: white;">Adaptation?</label>
                 </div>
                 
@@ -77,7 +77,7 @@
         <div class="row rw-sent">
             <div class="container col-sm babymonitor">
                 <div class="card system-info sent">
-                    <h5 class="card-header text-center">Sent</h5>
+                    <h5 class="card-header text-center bm">Sent</h5>
                     <div class="card-body">
                         <div id="babymonitor-sent"></div>
                     </div>
@@ -86,7 +86,7 @@
 
             <div class="container col-sm smartphone">
                 <div class="card system-info sent">
-                    <h5 class="card-header text-center">Sent</h5>
+                    <h5 class="card-header sm text-center ">Sent</h5>
                     <div class="card-body">
                         <div id="smartphone-sent"></div>
                     </div>
@@ -95,7 +95,7 @@
             
             <div class="container col-sm smarttv">
                 <div class="card system-info sent">
-                    <h5 class="card-header text-center">Sent</h5>
+                    <h5 class="card-header tv text-center">Sent</h5>
                     <div class="card-body">
                         <div id="tv-sent"></div>
                     </div>
@@ -116,7 +116,7 @@
         <div class="row rw-received">
             <div class="container col-sm babymonitor">
                 <div class="card system-info received">
-                    <h5 class="card-header text-center">Received</h5>
+                    <h5 class="card-header text-center bm">Received</h5>
                     <div class="card-body">
                         <div id="babymonitor-receive"></div>
                     </div>
@@ -125,16 +125,17 @@
 
             <div class="container col-sm smartphone">
                 <div class="card system-info received">
-                    <h5 class="card-header text-center">Received</h5>
+                    <h5 class="card-header text-center sm">Received</h5>
                     <div class="card-body">
-                        <div id="smartphone-receive"></div>
+                        <div class="smartphone-receive from-bm"></div>
+                        <div class="smartphone-receive from-tv"></div>
                     </div>
                 </div>
             </div>
 
             <div class="container col-sm smarttv">
                 <div class="card system-info received">
-                    <h5 class="card-header text-center">Received</h5>
+                    <h5 class="card-header text-center tv">Received</h5>
                     <div class="card-body">
                         <div id="tv-receive"></div>
                     </div>
@@ -154,7 +155,7 @@
         <div class="row rw-received">
             <div class="container col-sm babymonitor">
                 <div class="card system-info information">
-                    <h5 class="card-header text-center">information</h5>
+                    <h5 class="card-header text-center bm">information</h5>
                     <div class="card-body">
                         <div id="babymonitor-information"></div>
                     </div>
@@ -163,7 +164,7 @@
 
             <div class="container col-sm smartphone">
                 <div class="card system-info information">
-                    <h5 class="card-header text-center">Information</h5>
+                    <h5 class="card-header text-center sm">Information</h5>
                     <div class="card-body">
                         <div id="smartphone-information"></div>
                     </div>
@@ -172,7 +173,7 @@
 
             <div class="container col-sm smarttv">
                 <div class="card system-info information">
-                    <h5 class="card-header text-center" id="tv-color">Information</h5>
+                    <h5 class="card-header text-center tv" id="block">Information</h5>
                     <div class="card-body">
                         <div id="tv-information"></div>
                     </div>
@@ -208,10 +209,12 @@
         </div>
     </body>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smartphone_received.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smartphone_sent.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smart_tv_sent.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/smart_tv_received.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/log.js') }}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/observer.js') }}"></script>
 </html>
