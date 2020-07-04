@@ -19,7 +19,10 @@ class Observer(threading.Thread):
         self.bindings = self.subscribe_in_all_queues()
         self.notification = False
         self.adaptation = False
-        self.block_tv = None
+        self.block_tv = None # Ação de apatação
+        self.messages_types = None
+        self.adaptation_action = None
+        self.exceptional_scenarios = None
 
     def get_bindings(self):
         client = Client("localhost:15672", "guest", "guest")
@@ -53,6 +56,9 @@ class Observer(threading.Thread):
         body = json.loads(body.decode("UTF-8"))
         self.read_message(body, method.routing_key)
 
+    def define_messages(self, types: list):
+        self.messages_types = types
+
     def run(self):
         print("Working Observer")
         self.channel.basic_consume(
@@ -76,6 +82,7 @@ class Observer(threading.Thread):
             if self.adaptation:
                 print("OBSERVER - Minha adaptação deu certo")
                 ObserverService(ObserverModel).insert_data({"success": True})
+                self.block_tv(True)
                 self.adaptation = False
             self.notification = False
 

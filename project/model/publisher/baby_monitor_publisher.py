@@ -12,6 +12,19 @@ from project import socketio
 import json
 from project.util.generate_log import log
 import pika
+import random
+from project.model.publisher.smartphone_publisher import SmartphonePublisher
+
+once = True
+
+
+def user_confirm_simulation():
+    last_send = BabyMonitorService(BabyMonitorSend).last_record()
+    id_notification = last_send["id"]
+    BabyMonitorService(BabyMonitorReceive).insert_data(
+        dict(id_notification=id_notification)
+    )
+    SmartphonePublisher("confirmation").start()
 
 
 class BabyMonitorPublisher(ConfigScenario, Thread):
@@ -26,12 +39,21 @@ class BabyMonitorPublisher(ConfigScenario, Thread):
 
     @log
     def publish_info_baby(self, status):
+        global once
+        print("\n\n\n ONCEEE:", once)
+        if status["type"] == "notification" and once:
+            choice = random.choices([True, False], [0.0, 1.0], k=1)[0]
+            if choice:
+                user_confirm_simulation()
+            once = False
+
+        if status["type"] == "status":
+            once = True
+
         self.channel.basic_publish(
             exchange=exchange,
             routing_key=bm_info,
-            properties=pika.BasicProperties(
-                delivery_mode=2,
-            ),
+            properties=pika.BasicProperties(delivery_mode=2,),
             body=json.dumps(status),
         )
         socketio.emit("BabyMonitorSent", status)
