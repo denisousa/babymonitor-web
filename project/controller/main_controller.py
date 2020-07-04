@@ -82,7 +82,7 @@ def tv_connect():
     global tv_on
     tv_on = True
     subscriber = SmartTvSubscriber()
-    SmartTvService().insert_data(dict(block=False))
+    SmartTvService().insert_data(dict(block=False))  # Setar aqui o número random
     subscriber.start()
     while True:
         sleep(1)
@@ -101,7 +101,9 @@ def tv_disconnect():
 def observer_connect():
     global ob_on
     observer = Observer()
-    observer.block_tv = block_tv
+    observer.messages_types = ("status", "notification", "confirmation")
+    observer.steps_to_adapt = [(block_tv, (False,))]
+    observer.steps_for_behave_normal = [(block_tv, (True,))]
     observer.start()
     while True:
         if not sp_on:
@@ -139,4 +141,4 @@ def block_tv(blocked):
         socketio.emit("NormalColor")
         SmartTvService().insert_data(dict(block=False))
     last_data = SmartTvService().last_record()
-    print('\n\n FROM BLOCK TV ', last_data)
+    print("\n\n FROM BLOCK TV ", last_data)

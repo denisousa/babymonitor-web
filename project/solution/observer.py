@@ -20,8 +20,9 @@ class Observer(threading.Thread):
         self.notification = False
         self.adaptation = False
         self.block_tv = None # Ação de apatação
+        self.steps_to_adapt = []
+        self.steps_for_behave_normal = []
         self.messages_types = None
-        self.adaptation_action = None
         self.exceptional_scenarios = None
 
     def get_bindings(self):
@@ -82,18 +83,26 @@ class Observer(threading.Thread):
             if self.adaptation:
                 print("OBSERVER - Minha adaptação deu certo")
                 ObserverService(ObserverModel).insert_data({"success": True})
-                self.block_tv(True)
+                #self.normal_behave()
                 self.adaptation = False
             self.notification = False
 
         if message["type"] == "status" and source == "st_info":
             if message["block"]:
-                print("OBSERVER -Vou desbloquear a TV")
+                print("OBSERVER - Vou desbloquear a TV")
                 self.adaptation = True
-                self.adapt_tv()
+                # self.adapt_tv()
+                self.adaptation_action()
 
-    def adapt_tv(self):
-        self.block_tv(False)
+    def adaptation_action(self):
+        for function, params in self.steps_to_adapt:
+            function(*params)
+        # self.block_tv(False)
+        sleep(2)
+
+    def normal_behave(self):
+        for function, params in self.steps_for_behave_normal:
+            function(*params)
         sleep(2)
 
 # Confirmação -> Usuário ou da TV
