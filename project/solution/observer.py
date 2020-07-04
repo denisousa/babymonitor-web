@@ -5,6 +5,7 @@ from time import sleep
 from pyrabbit.api import Client
 from project.solution.observer_service import ObserverService
 from project.solution.observer_model import ObserverModel
+from project import socketio
 
 
 class Observer(threading.Thread):
@@ -13,17 +14,16 @@ class Observer(threading.Thread):
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(host="localhost")
         )
-        self.channel = self.connection.channel()
         self.queue = "observer"
+        self.channel = self.connection.channel()
         self.channel.queue_declare(self.queue)
-        self.bindings = self.subscribe_in_all_queues()
         self.notification = False
         self.adaptation = False
-        self.block_tv = None # Ação de apatação
-        self.steps_to_adapt = []
-        self.steps_for_behave_normal = []
+        self.steps_to_adapt = None
+        self.steps_for_behave_normal = None
         self.messages_types = None
         self.exceptional_scenarios = None
+        self.subscribe_in_all_queues()
 
     def get_bindings(self):
         client = Client("localhost:15672", "guest", "guest")
@@ -52,10 +52,11 @@ class Observer(threading.Thread):
     def callback(self, ch, method, properties, body):
         ch.basic_ack(delivery_tag=method.delivery_tag)
         print(
-            " [OBSERVER] Receive Topic: %r | Message: %r" % (method.routing_key, body)
+            " [OBSERVER] Receive: %r Data: %r" % (method.routing_key, body)
         )
         body = json.loads(body.decode("UTF-8"))
-        self.read_message(body, method.routing_key)
+        if body['type'] in self.messages_types:
+            self.read_message(body, method.routing_key)
 
     def define_messages(self, types: list):
         self.messages_types = types
@@ -72,6 +73,8 @@ class Observer(threading.Thread):
         raise SystemExit()
 
     def read_message(self, message, source):
+        # Momento opcional para saber se a adaptação falou
+        # Acho que isso tá no esganando amiga!
         if message["type"] == "notification":
             print("OBSERVER - Recebi mensagem de notificação")
             if self.adaptation:
@@ -79,34 +82,29 @@ class Observer(threading.Thread):
                 ObserverService(ObserverModel).insert_data({"success": False})
             self.notification = True
 
+        # Momento de voltar ao normal
         if message["type"] == "confirmation":
             if self.adaptation:
                 print("OBSERVER - Minha adaptação deu certo")
                 ObserverService(ObserverModel).insert_data({"success": True})
-                #self.normal_behave()
                 self.adaptation = False
+                self.normal_behave()
             self.notification = False
 
+        # Momento da adaptação
         if message["type"] == "status" and source == "st_info":
             if message["block"]:
                 print("OBSERVER - Vou desbloquear a TV")
                 self.adaptation = True
-                # self.adapt_tv()
                 self.adaptation_action()
 
     def adaptation_action(self):
         for function, params in self.steps_to_adapt:
             function(*params)
-        # self.block_tv(False)
+            socketio.emit('successAdapter')
         sleep(2)
 
     def normal_behave(self):
         for function, params in self.steps_for_behave_normal:
             function(*params)
         sleep(2)
-
-# Confirmação -> Usuário ou da TV
-# Se recebe notificação
-# 1 - Conexão ao broker
-# 2 - Cria fila só para ele e escuta de todas as rotas
-# 3 - Se ele recebe msg da TV dizendo que está bloqueada

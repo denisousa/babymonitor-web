@@ -51,3 +51,14 @@ socket.on('BabyMonitorReceive', function(msg) {
         document.querySelector("#babymonitor-receive").innerHTML = '';
     }
 });
+
+socket.on('successAdapter', function(msg) {
+    changeColor("#148F77", "white", ".bm")
+    setTimeout(function(){
+        changeColor("white", "black", ".bm")
+    }, 1000);
+});
+
+document.querySelector('#restart').onclick = function () {
+    socket.emit('restart');
+};
