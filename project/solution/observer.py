@@ -17,7 +17,6 @@ class Observer(threading.Thread):
         self.queue = "observer"
         self.channel = self.connection.channel()
         self.channel.queue_declare(self.queue)
-        self.notification = False
         self.adaptation = False
         self.steps_to_adapt = None
         self.steps_for_behave_normal = None
@@ -80,7 +79,6 @@ class Observer(threading.Thread):
             if self.adaptation:
                 print("OBSERVER - Minha adaptação falhou")
                 ObserverService(ObserverModel).insert_data({"success": False})
-            self.notification = True
 
         # Momento de voltar ao normal
         if message["type"] == "confirmation":
@@ -88,8 +86,7 @@ class Observer(threading.Thread):
                 print("OBSERVER - Minha adaptação deu certo")
                 ObserverService(ObserverModel).insert_data({"success": True})
                 self.adaptation = False
-                self.normal_behave()
-            self.notification = False
+                self.return_normal_behave()
 
         # Momento da adaptação
         if message["type"] == "status" and source == "st_info":
@@ -104,7 +101,7 @@ class Observer(threading.Thread):
             socketio.emit('successAdapter')
         sleep(2)
 
-    def normal_behave(self):
+    def return_normal_behave(self):
         for function, params in self.steps_for_behave_normal:
             function(*params)
         sleep(2)
