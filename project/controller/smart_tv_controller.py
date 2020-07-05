@@ -3,7 +3,7 @@ from project.model.subscriber.smart_tv_subscriber import SmartTvSubscriber
 from project.model.publisher.smart_tv_publisher import SmartTvPublisher
 from project.model.service.smart_tv_service import SmartTvService
 from time import sleep
-
+import random
 
 sp_on = False
 
@@ -13,7 +13,8 @@ def tv_connect():
     global tv_on
     tv_on = True
     subscriber = SmartTvSubscriber()
-    SmartTvService().insert_data(dict(block=False))  # Setar aqui random
+    block = random.choices([True, False], [0.50, 0.50], k=1)[0]
+    SmartTvService().insert_data(dict(block=block))  # Setar aqui random
     subscriber.start()
     while True:
         sleep(1)

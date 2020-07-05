@@ -49,10 +49,6 @@ def restart():
     connection.channel.queue_delete(queue=queue_smart_tv)
     sleep(1)
     print('RESTART WORKING...')
-    # observer_connect()
-    # smartphone_connect()
-    # tv_connect()
-    # observer_connect()
 
 
 def start_controllers():

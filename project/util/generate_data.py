@@ -5,8 +5,8 @@ from project.model.baby_monitor import BabyMonitorSend
 
 # Configuração:
 # Máximo de repetições do status (bom)
-# Probabilidade da criança ficar mal
-# Tempo de confirmação do usuário para o celular
+# Probabilidade de gerar status ruim
+# Tempo limite de espera do celular para encaminhar para a TV (X)
 # O tempo para acudir a criança (Tempo de exibição da alerta na TV)
 max_no_changes = random.randint(5, 10)
 
@@ -72,6 +72,7 @@ def data_from_baby(flag: str):
             data["time_no_breathing"] = 0
 
         else:
+            # Mudar o data["breathing"]
             data["sleeping"] = random.choices([True, False], [0.75, 0.25], k=1)[0]
             data["breathing"] = random.choices([True, False], [0, 1.0], k=1)[0]
             data["time_no_breathing"] = 0

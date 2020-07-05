@@ -42,7 +42,7 @@ class BabyMonitorPublisher(ConfigScenario, Thread):
         global once
         print("\n\n\n ONCEEE:", once)
         if status["type"] == "notification" and once:
-            choice = random.choices([True, False], [0.0, 1.0], k=1)[0]
+            choice = random.choices([True, False], [0.90, 0.10], k=1)[0]
             if choice:
                 user_confirm_simulation()
             once = False
