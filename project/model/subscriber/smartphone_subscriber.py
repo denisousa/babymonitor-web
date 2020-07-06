@@ -103,19 +103,21 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
         ch.basic_ack(delivery_tag=method.delivery_tag)
         body = body.decode("UTF-8")
         body = json.loads(body)
-        socketio.emit("SmartphoneReceive", body)
+        socketio.emit("FromTv", body)
         sleep(1)
         confirm = check_user_confirm()
         if body["block"] and not confirm:
+            print(f'AQUI DENIS {body} \n\n\n\n\n\n\n\n')
             socketio.emit(
-                "SmartphoneInformation",
+                "FromTvInformation",
                 {"info": "TV couldn't show message"}
             )
             # forward again
             forward_message_smart_tv()
         else:
+            print(f'AQUI DENIS {body} \n\n\n\n\n\n\n\n')
             socketio.emit(
-                "SmartphoneInformation", {"info": "TV just showed the message"}
+                "FromTvInformation", {"info": "TV just showed the message"}
             )
             # send confirmation to BM
             SmartphonePublisher("confirmation").start()

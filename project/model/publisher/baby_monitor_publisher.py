@@ -14,17 +14,11 @@ from project.util.generate_log import log
 import pika
 import random
 from project.model.publisher.smartphone_publisher import SmartphonePublisher
+from datetime import datetime
+from project.controller.smartphone_controller import user_confirm
+
 
 once = True
-
-
-def user_confirm_simulation():
-    last_send = BabyMonitorService(BabyMonitorSend).last_record()
-    id_notification = last_send["id"]
-    BabyMonitorService(BabyMonitorReceive).insert_data(
-        dict(id_notification=id_notification)
-    )
-    SmartphonePublisher("confirmation").start()
 
 
 class BabyMonitorPublisher(ConfigScenario, Thread):
@@ -37,18 +31,17 @@ class BabyMonitorPublisher(ConfigScenario, Thread):
         status = self.generate_status()
         self.publish_info_baby(status)
 
-    @log
     def publish_info_baby(self, status):
         global once
-        print("\n\n\n ONCEEE:", once)
-        if status["type"] == "notification" and once:
-            choice = random.choices([True, False], [0.90, 0.10], k=1)[0]
+        '''if status["type"] == "notification" and once:
+            random.seed(datetime.now())
+            choice = random.choices([True, False], [0.0, 1.0], k=1)[0]
             if choice:
-                user_confirm_simulation()
+                user_confirm()
             once = False
 
         if status["type"] == "status":
-            once = True
+            once = True'''
 
         self.channel.basic_publish(
             exchange=exchange,

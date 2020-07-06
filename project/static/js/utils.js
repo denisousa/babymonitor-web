@@ -10,8 +10,6 @@ function showData(className, data, msg){
     var p = document.createElement("p");
     var value = document.createTextNode(data + ": " + msg[data]);
     p.appendChild(value);
-    console.log("HEREEEEEE!")
-    console.log(document.querySelector(className))
     document.querySelector(className).appendChild(p);
 }
 

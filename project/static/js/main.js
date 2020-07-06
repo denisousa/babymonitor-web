@@ -60,6 +60,5 @@ socket.on('successAdapter', function(msg) {
 });
 
 document.querySelector('#restart').onclick = function () {
-    console.log('restart sendo chamado')
     socket.emit('restart');
 };

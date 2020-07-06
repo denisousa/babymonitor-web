@@ -41,7 +41,7 @@ socket.on('TvReceive', function (msg) {
             document.querySelector("#tv-receive").appendChild(p);
             setTimeout(function () {
                 document.querySelector("#tv-receive").innerHTML = '';
-            }, 3000);
+            }, 1000);
         }
     }
 });

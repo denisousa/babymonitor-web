@@ -7,6 +7,6 @@ socket.on('TvSent', function (msg) {
         document.querySelector("#tv-sent").appendChild(p);
         setTimeout(function () {
             document.querySelector("#tv-sent").innerHTML = '';
-        }, 3000);
+        }, 1000);
     }
 });

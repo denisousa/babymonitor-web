@@ -4,6 +4,7 @@ from project.model.publisher.smart_tv_publisher import SmartTvPublisher
 from project.model.service.smart_tv_service import SmartTvService
 from time import sleep
 import random
+from datetime import datetime
 
 sp_on = False
 
@@ -13,8 +14,10 @@ def tv_connect():
     global tv_on
     tv_on = True
     subscriber = SmartTvSubscriber()
-    block = random.choices([True, False], [0.50, 0.50], k=1)[0]
-    SmartTvService().insert_data(dict(block=block))  # Setar aqui random
+    random.seed(datetime.now())
+    # block = random.choices([True, False], [0.90, 0.10], k=1)[0]
+    # print('\n\n\n TV BLOCK RESULT: ', block, '\n\n\n')
+    # SmartTvService().insert_data(dict(block=block))  # Setar aqui random
     subscriber.start()
     while True:
         sleep(1)

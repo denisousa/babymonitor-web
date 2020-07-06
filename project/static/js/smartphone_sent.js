@@ -12,7 +12,7 @@ socket.on('SmartphoneSent', function(msg) {
             document.querySelector("#smartphone-sent").appendChild(p);
             setTimeout(function(){
                 document.querySelector("#smartphone-sent").innerHTML = '';
-            }, 3000);
+            }, 1000);
         }
     }
 });
