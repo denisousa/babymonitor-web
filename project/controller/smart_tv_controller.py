@@ -16,8 +16,7 @@ def tv_connect():
     subscriber = SmartTvSubscriber()
     random.seed(datetime.now())
     # block = random.choices([True, False], [0.90, 0.10], k=1)[0]
-    # print('\n\n\n TV BLOCK RESULT: ', block, '\n\n\n')
-    # SmartTvService().insert_data(dict(block=block))  # Setar aqui random
+    SmartTvService().insert_data(dict(block=False))  # Setar aqui random
     subscriber.start()
     while True:
         sleep(1)

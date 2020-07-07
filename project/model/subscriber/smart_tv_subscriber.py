@@ -23,6 +23,7 @@ class SmartTvSubscriber(ConfigScenario, Thread):
         self.consume_message()
 
     def stop(self):
+        # self.channel.queue_delete(queue=queue_smart_tv)
         print("(Subscribe) TV: Close")
         raise SystemExit()
 
@@ -41,10 +42,12 @@ class SmartTvSubscriber(ConfigScenario, Thread):
         ch.basic_ack(delivery_tag=method.delivery_tag)
         body = body.decode("UTF-8")
         body = json.loads(body)
+        print(f'CALLBACK SOMENTE DA TV {body} \n\n\n\n\n\n\n\n')
         socketio.emit("TvReceive", body)
         last_record = SmartTvService().last_record()
 
         if last_record is not None:
+            print(f' fui chamado: last_record: {last_record} \n\n\n\n\n\n\n\n')
             # se não: Info -> "Notification: bla bla"
             # both: pub st_info -> 'I'm tananam'
             if not last_record['block']:

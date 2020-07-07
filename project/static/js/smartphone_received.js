@@ -6,17 +6,23 @@ document.querySelector('#btn-smartphone').onclick = function () {
     data_sm = !data_sm
     if (data_sm) {
         socket.emit('smartphoneConnect');
+        document.querySelector('#btn-smartphone').innerHTML = 'Stop';
         disconnect_sm = false;
-        changeColor("#17a2b8", "white", ".sm")
+        changeColor("#17a2b8", "white", ".sm");
         setTimeout(function () {
-            changeColor("white", "black", ".sm")
+            changeColor("white", "black", ".sm");
         }, 1000);
     } else {
         disconnect_sm = true;
         socket.emit('smartphoneDesconnect');
-        changeColor("#CD5C5C", "white", ".sm")
+        changeColor("#CD5C5C", "white", ".sm");
+        document.querySelector('#btn-smartphone').innerHTML = 'Start';
+        document.querySelector("#btn-smartphone-confirm").disabled = true;
         setTimeout(function () {
-            changeColor("white", "black", ".sm")
+            changeColor("white", "black", ".sm");
+            document.querySelector("#smartphone-sent").innerHTML = '';
+            document.querySelector("#smartphone-receive").innerHTML = '';
+            document.querySelector("#smartphone-information").innerHTML = '';
         }, 1000);
     }
 };
@@ -25,6 +31,11 @@ document.querySelector('#btn-smartphone').onclick = function () {
 socket.on('SmartphoneReceive', function (msg) {
     document.querySelector(".smartphone-receive").innerHTML = '';
     if (!disconnect_sm) {
+        if (msg['type'] == 'notification') {
+            document.querySelector("#btn-smartphone-confirm").disabled = false;
+        } else {
+            document.querySelector("#btn-smartphone-confirm").disabled = true;
+        }
         for (data in msg) {
             var p = document.createElement("p");
             var value = document.createTextNode(data + ": " + msg[data]);
@@ -43,9 +54,6 @@ socket.on('FromTv', function (msg) {
             p.appendChild(value);
             document.querySelector(".from-tv").appendChild(p);
         }
-        setTimeout(function () {
-            document.querySelector(".from-tv").innerHTML = '';
-        }, 1000);
     }
 });
 
@@ -59,10 +67,6 @@ socket.on('SmartphoneInformation', function (msg) {
             p.appendChild(value);
             document.querySelector("#smartphone-information").appendChild(p);
         }
-    } else {
-        setTimeout(function () {
-            document.querySelector(".smartphone-receive").innerHTML = '';
-        }, 3000);
     }
 });
 
@@ -77,8 +81,5 @@ socket.on('FromTvInformation', function (msg) {
             p.appendChild(value);
             document.querySelector("#from-tv-information").appendChild(p);
         }
-        setTimeout(function(){
-            document.querySelector("#from-tv-information").innerHTML = '';
-        }, 1000);
     }
 });

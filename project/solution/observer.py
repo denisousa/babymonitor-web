@@ -89,19 +89,18 @@ class Observer(threading.Thread):
                 self.return_normal_behave()
 
         # Momento da adaptação
-        if message["type"] == "status" and source == "st_info":
-            if message["block"]:
-                print("OBSERVER - Vou desbloquear a TV")
-                self.adaptation = True
-                self.adaptation_action()
+        if message["type"] == "status" and source == "st_info" and message["block"]:
+            print("OBSERVER - Vou desbloquear a TV")
+            self.adaptation = True
+            self.adaptation_action()
 
     def adaptation_action(self):
         for function, params in self.steps_to_adapt:
             function(*params)
-            socketio.emit('successAdapter')
-        sleep(2)
+        sleep(1)
+        socketio.emit('successAdapter')
 
     def return_normal_behave(self):
         for function, params in self.steps_for_behave_normal:
             function(*params)
-        sleep(2)
+

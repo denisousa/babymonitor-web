@@ -5,8 +5,5 @@ socket.on('TvSent', function (msg) {
         var value = document.createTextNode(data + ": " + msg[data]);
         p.appendChild(value);
         document.querySelector("#tv-sent").appendChild(p);
-        setTimeout(function () {
-            document.querySelector("#tv-sent").innerHTML = '';
-        }, 1000);
     }
 });

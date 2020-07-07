@@ -10,9 +10,6 @@ socket.on('SmartphoneSent', function(msg) {
             var value = document.createTextNode(data + ": " + msg[data]);
             p.appendChild(value);
             document.querySelector("#smartphone-sent").appendChild(p);
-            setTimeout(function(){
-                document.querySelector("#smartphone-sent").innerHTML = '';
-            }, 1000);
         }
     }
 });

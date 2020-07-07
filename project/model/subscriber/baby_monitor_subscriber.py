@@ -25,6 +25,7 @@ class BabyMonitorSubscriber(ConfigScenario, Thread):
         self.check_baby_status()
 
     def stop(self):
+        # self.channel.queue_delete(queue=queue_baby_monitor)
         print("(Subscribe) BM: Close")
         raise SystemExit()
 

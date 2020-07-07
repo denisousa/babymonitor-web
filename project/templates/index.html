@@ -39,7 +39,7 @@
 
                 <div class="box">
                     <button type="submit" class="btn btn-info btn-devices" id="btn-smartphone">Start</button>
-                    <button type="submit" class="btn btn-info btn-devices" id="btn-smartphone-confirm">Confirm</button>
+                    <button type="submit" class="btn btn-info btn-devices" id="btn-smartphone-confirm" disabled>Confirm</button>
                 </div> 
 
             </div>
@@ -53,7 +53,7 @@
 
                 <div class="box">
                     <button type="submit" class="btn btn-info btn-devices" id="btn-tv">Start</button>
-                    <button type="submit" class="btn btn-info btn-devices" id="btn-tv-block">Block</button>
+                    <button type="submit" class="btn btn-info btn-devices" id="btn-tv-block" disabled>Block</button>
                 </div> 
                 
             </div>
@@ -79,7 +79,12 @@
                 <div class="card system-info sent">
                     <h5 class="card-header text-center bm">Sent</h5>
                     <div class="card-body">
-                        <div id="babymonitor-sent"></div>
+                        <div class="babymonitor-sent">
+                            <p class="type"></p>
+                            <p class="breathing"></p>
+                            <p class="sleeping"></p>
+                            <p class="time-no-breathing"></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -128,7 +133,12 @@
                 <div class="card system-info received">
                     <h5 class="card-header text-center sm">Received</h5>
                     <div class="card-body">
-                        <div class="smartphone-receive"></div>
+                        <div id="smartphone-receive">
+                            <p class="type"></p>
+                            <p class="breathing"></p>
+                            <p class="sleeping"></p>
+                            <p class="time-no-breathing"></p>
+                        </div>
                         <hr>
                         <div class="from-tv"></div>
                     </div>
@@ -156,7 +166,7 @@
             </div>-->
         </div>
 
-        <div class="row rw-received">
+        <div class="row rw-information">
             <div class="container col-sm babymonitor">
                 <div class="card system-info information">
                     <h5 class="card-header text-center bm">information</h5>

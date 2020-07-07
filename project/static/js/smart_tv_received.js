@@ -7,17 +7,25 @@ document.querySelector('#btn-tv').onclick = function () {
     data_tv = !data_tv
     if (data_tv) {
         socket.emit('tvConnect');
+        document.querySelector('#btn-tv').innerHTML = 'Stop';
+        document.querySelector("#btn-tv-block").disabled = false;
         disconnect_tv = false;
-        changeColor("#17a2b8", "white", ".tv")
-        setTimeout(function(){
-            changeColor("white", "black", ".tv")
+        changeColor("#17a2b8", "white", ".tv");
+        setTimeout(function () {
+            changeColor("white", "black", ".tv");
         }, 1000);
     } else {
         disconnect_tv = true;
         socket.emit('tvDisconnect');
+        document.querySelector('#btn-tv').innerHTML = 'Start';
+        document.querySelector("#btn-tv-block").disabled = true;
+        document.querySelector('#btn-tv-block').innerHTML = 'Block'
         changeColor("#CD5C5C", "white", ".tv")
-        setTimeout(function(){
+        setTimeout(function () {
             changeColor("white", "black", ".tv")
+            document.querySelector("#tv-sent").innerHTML = '';
+            document.querySelector("#tv-receive").innerHTML = '';
+            document.querySelector("#tv-information").innerHTML = '';
         }, 1000);
     }
 };
@@ -26,8 +34,10 @@ document.querySelector('#btn-tv-block').onclick = function () {
     block_tv = !block_tv;
     if (block_tv) {
         socket.emit('tvBlock', true);
+        document.querySelector('#btn-tv-block').innerHTML = 'Unlock'
     } else {
         socket.emit('tvBlock', false);
+        document.querySelector('#btn-tv-block').innerHTML = 'Block'
     }
 };
 
@@ -39,9 +49,6 @@ socket.on('TvReceive', function (msg) {
             var value = document.createTextNode(data + ": " + msg[data]);
             p.appendChild(value);
             document.querySelector("#tv-receive").appendChild(p);
-            setTimeout(function () {
-                document.querySelector("#tv-receive").innerHTML = '';
-            }, 1000);
         }
     }
 });
@@ -54,9 +61,6 @@ socket.on('TvInformation', function (msg) {
             var value = document.createTextNode(data + ": " + msg[data]);
             p.appendChild(value);
             document.querySelector("#tv-information").appendChild(p);
-            setTimeout(function () {
-                document.querySelector("#tv-information").innerHTML = '';
-            }, 3000);
         }
     }
 });

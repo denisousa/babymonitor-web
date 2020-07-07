@@ -12,8 +12,6 @@ sp_on = False
 def smartphone_connect():
     global sp_on
     sp_on = True
-    info = {"info": "Smartphone Start"}
-    socketio.emit("SmartphoneInformation", info)
     # check_user_confirm = checkUserConfirm()
     subscriber_bm = SmartphoneSubscriber("babymonitor")
     subscriber_tv = SmartphoneSubscriber("smart_tv")

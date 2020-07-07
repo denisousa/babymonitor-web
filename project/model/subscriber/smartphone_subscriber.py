@@ -51,10 +51,12 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
     def stop(self):
         if self.type_consume == "babymonitor":
             print("(Subscribe) SP|BM: Close")
+            # self.channel.queue_delete(queue=queue_smartphone_bm)
             self._stop.set()
             self._stop.isSet()
         else:
             print("(Subscribe) SP|TV: Close")
+            # self.channel.queue_delete(queue=queue_smartphone_st)
             self._stop.set()
             self._stop.isSet()
 
@@ -103,6 +105,7 @@ class SmartphoneSubscriber(ConfigScenario, Thread):
         ch.basic_ack(delivery_tag=method.delivery_tag)
         body = body.decode("UTF-8")
         body = json.loads(body)
+        print(f'CALLBACK TV DATA {body} \n\n\n\n\n\n\n\n')
         socketio.emit("FromTv", body)
         sleep(1)
         confirm = check_user_confirm()
